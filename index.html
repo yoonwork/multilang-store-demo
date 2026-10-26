@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>테이블말 · 다국어 매장 응대 고도화 시연</title>
+<meta name="description" content="손님웹(Next.js 전환 후), 직원앱, 상점앱, 관리자 화면이 한 페이지에서 이어지는 제안용 데모예요. 번역은 미리 만든 예시 문장이에요.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23191F28'/%3E%3Cpath d='M9 11h14v8h-7l-4 3v-3H9z' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linejoin='round'/%3E%3Ccircle cx='21' cy='11' r='3' fill='%233182F6'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style id="tokens">
+:root{
+  color-scheme: light;
+  --brand:#3182F6; --brand-hover:#1B64DA; --brand-press:#1957C2;
+  --brand-text:#1B64DA; --brand-tint:#E8F3FF; --brand-tint-2:#C9E2FF;
+  --ring:0 0 0 3px rgba(49,130,246,.32);
+  --page:#FFFFFF; --sec:#F2F4F6; --card:#FFFFFF; --soft:#F9FAFB;
+  --fill:#F2F4F6; --fill-2:#E5E8EB; --hair:#EEF0F3;
+  --ink:#191F28; --ink-2:#4E5968; --mut:#636D7B; --mut-2:#8B95A1;
+  --ok:#127A4F;  --ok-dot:#1FA971;  --ok-bg:#E8F7EF;
+  --warn:#8A5A00; --warn-dot:#F5A524; --warn-bg:#FFF6E3;
+  --bad:#C9252D; --bad-dot:#F04452; --bad-bg:#FFEEEF;
+  --info:#1B64DA; --info-dot:#3182F6; --info-bg:#E8F3FF;
+  --neu:#4E5968; --neu-dot:#B0B8C1; --neu-bg:#F2F4F6;
+  --font:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Hiragino Sans","PingFang SC","Microsoft YaHei","Malgun Gothic","Noto Sans KR","Noto Sans JP","Noto Sans SC","Noto Sans Thai",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --r-card:24px; --r-in:14px; --r-btn:12px; --r-sm:8px; --r-pill:999px;
+  --float:0 2px 6px rgba(16,24,40,.06),0 12px 32px rgba(16,24,40,.14);
+}
+</style>
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--sec);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.6;word-break:keep-all;overflow-wrap:break-word;-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,ul,ol{margin:0}
+ul,ol{padding:0;list-style:none}
+button{font-family:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono);font-size:12px}
+.wrap{max-width:1440px;margin:0 auto;padding:0 24px}
+:focus-visible{outline:none;box-shadow:var(--ring);border-radius:var(--r-btn)}
+
+/* 띠 + 머리 */
+.band{background:var(--ink);color:#fff;font-size:13px;line-height:1.5;padding:8px 16px;text-align:center}
+.band b{font-weight:600;margin-right:4px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:20px;flex-wrap:wrap}
+.brandbox{display:flex;align-items:center;gap:12px;min-width:0}
+.mark{width:40px;height:40px;border-radius:12px;background:var(--ink);display:grid;place-items:center;flex:none}
+.prod{font-size:15px;font-weight:700;line-height:1.3}
+.prodsub{font-size:13px;color:var(--mut);line-height:1.4}
+.topr{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lbl{font-size:13px;color:var(--mut);font-weight:500}
+
+.seg{display:inline-flex;background:var(--fill-2);border-radius:var(--r-btn);padding:4px;gap:2px;max-width:100%}
+.seg button{height:40px;border:0;background:transparent;border-radius:9px;padding:0 14px;font-size:14px;font-weight:600;color:var(--mut);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(16,24,40,.08)}
+.seg button:hover:not([aria-pressed="true"]){color:var(--ink)}
+.seg.sm button{height:36px;padding:0 12px;font-size:13px}
+.pane-b .seg{background:var(--fill-2)}
+
+.btn{height:44px;border:0;border-radius:var(--r-btn);padding:0 16px;font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;transition:background .12s}
+.btn.pri{background:var(--brand);color:#fff}
+.btn.pri:hover{background:var(--brand-hover)}
+.btn.pri:active{background:var(--brand-press)}
+.btn.sec{background:var(--brand-tint);color:var(--brand-text)}
+.btn.sec:hover{background:var(--brand-tint-2)}
+.btn.gry{background:var(--fill);color:var(--ink-2)}
+.btn.gry:hover{background:var(--fill-2)}
+.btn.wht{background:#fff;color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--fill-2)}
+.btn.wht:hover{background:var(--soft)}
+.btn.full{width:100%;height:52px;font-size:17px;font-weight:700}
+.btn.sm{height:36px;font-size:13px;padding:0 12px;border-radius:10px}
+.btn:disabled{background:var(--fill-2);color:var(--mut-2);cursor:not-allowed}
+
+.chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:var(--r-pill);font-size:12px;font-weight:600;white-space:nowrap;background:var(--neu-bg);color:var(--neu)}
+.chip i{width:6px;height:6px;border-radius:50%;background:var(--neu-dot);flex:none}
+.chip.ok{background:var(--ok-bg);color:var(--ok)} .chip.ok i{background:var(--ok-dot)}
+.chip.warn{background:var(--warn-bg);color:var(--warn)} .chip.warn i{background:var(--warn-dot)}
+.chip.bad{background:var(--bad-bg);color:var(--bad)} .chip.bad i{background:var(--bad-dot)}
+.chip.info{background:var(--info-bg);color:var(--info)} .chip.info i{background:var(--info-dot)}
+.ex{display:inline-flex;align-items:center;height:20px;padding:0 6px;border-radius:6px;background:var(--warn-bg);color:var(--warn);font-size:12px;font-weight:600;white-space:nowrap;vertical-align:middle}
+
+/* 첫 설명 */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:end;padding-top:32px;padding-bottom:20px}
+.hero h1{font-size:32px;line-height:1.3;font-weight:700;letter-spacing:-.02em}
+.hero p{margin-top:8px;color:var(--ink-2);font-size:15px;max-width:780px}
+.hero .try{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px}
+.hero .try span{font-size:13px;color:var(--ink-2);background:#fff;border-radius:var(--r-pill);padding:4px 12px}
+
+/* 휴대폰 탭 */
+.mtabs{display:none}
+
+/* 네 화면 */
+.panes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.pane{background:var(--card);border-radius:var(--r-card);overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.pane-h{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;border-bottom:1px solid var(--hair);min-height:68px}
+.pane-h h2{font-size:17px;font-weight:700;line-height:1.3}
+.pane-h p{font-size:12px;color:var(--mut);line-height:1.4}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ok);font-weight:600;white-space:nowrap}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--ok-dot);animation:blink 2s infinite}
+@keyframes blink{50%{opacity:.35}}
+.pane-b{height:740px;overflow:auto;position:relative;display:flex;flex-direction:column;scrollbar-width:thin}
+.pane-b.gry{background:var(--sec)}
+.pane.flash{box-shadow:0 0 0 3px var(--brand)}
+
+/* 손님웹 */
+.g-top{padding:16px 16px 12px;border-bottom:1px solid var(--hair);background:#fff;position:sticky;top:0;z-index:2}
+.g-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.g-store{font-size:17px;font-weight:700;line-height:1.3}
+.g-tbl{font-size:13px;color:var(--mut)}
+.g-lang{height:36px;border:0;border-radius:var(--r-pill);background:var(--fill);padding:0 12px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.g-acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:12px}
+.g-acts .btn{height:44px;font-size:13px;padding:0 6px;white-space:normal;line-height:1.2;text-align:center}
+.badge{min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--bad-dot);color:#fff;font-size:12px;font-weight:700;display:inline-grid;place-items:center}
+.g-body{padding:12px 16px 16px;flex:1}
+.g-note{font-size:13px;color:var(--warn);background:var(--warn-bg);border-radius:var(--r-btn);padding:8px 12px;margin-bottom:12px}
+.g-hello{padding:24px 16px 8px}
+.g-hello .hi{font-size:13px;color:var(--mut);line-height:1.8}
+.g-hello h3{font-size:24px;line-height:1.3;font-weight:700;margin-top:8px}
+.langs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 16px 24px}
+.langs button{min-height:56px;border:0;border-radius:var(--r-in);background:var(--fill);padding:8px 12px;text-align:left;cursor:pointer;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.langs button:hover{background:var(--fill-2)}
+.langs button[aria-pressed="true"]{background:var(--brand-tint);box-shadow:inset 0 0 0 2px var(--brand)}
+.langs b{font-size:15px;font-weight:600;line-height:1.3}
+.langs small{font-size:12px;color:var(--mut);display:flex;gap:4px;align-items:center}
+.cat{font-size:13px;color:var(--mut);font-weight:600;margin:8px 0}
+.mi{padding:16px 0;border-bottom:1px solid var(--hair)}
+.mi:last-child{border-bottom:0}
+.mi.hl{animation:hl 2.4s ease-out}
+@keyframes hl{0%,40%{background:var(--brand-tint)}100%{background:transparent}}
+.mi-n{font-size:17px;font-weight:700;line-height:1.35;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.mi-o{font-size:12px;color:var(--mut);margin-top:2px}
+.mi-d{font-size:14px;color:var(--ink-2);margin-top:4px;line-height:1.5}
+.mi-tags{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:12px;color:var(--ink-2)}
+.spice{display:inline-flex;align-items:center;gap:4px}
+.spice i{width:7px;height:7px;border-radius:50%;background:var(--fill-2)}
+.spice i.on{background:var(--bad-dot)}
+.alg b{font-weight:600;color:var(--ink)}
+.mi-f{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:8px}
+.price{font-size:17px;font-weight:700}
+.step{display:inline-flex;align-items:center;background:var(--fill);border-radius:var(--r-pill);height:40px}
+.step button{width:44px;height:40px;border:0;background:transparent;font-size:20px;line-height:1;cursor:pointer;color:var(--ink-2)}
+.step span{min-width:24px;text-align:center;font-weight:700}
+.g-cta{position:sticky;bottom:0;padding:12px 16px 16px;background:#fff;border-top:1px solid var(--hair);z-index:2;margin-top:auto}
+.g-cta .sub{font-size:12px;color:var(--mut);text-align:center;margin-bottom:8px}
+.ver{font-size:12px;color:var(--mut);padding:8px 0 4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.line{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 0;border-bottom:1px solid var(--hair)}
+.line .nm{font-weight:600;font-size:15px}
+.line .sb{font-size:12px;color:var(--mut)}
+.tot{display:flex;justify-content:space-between;padding:16px 0;font-size:17px;font-weight:700}
+.empty{padding:40px 16px;text-align:center;color:var(--mut);font-size:14px}
+.stat{background:var(--soft);border-radius:20px;padding:20px;margin-top:4px}
+.stat h3{font-size:20px;font-weight:700;line-height:1.35;margin-top:8px}
+.stat .meta{font-size:13px;color:var(--mut);margin-top:4px}
+.prog{display:flex;gap:4px;margin-top:16px}
+.prog i{flex:1;height:6px;border-radius:3px;background:var(--fill-2)}
+.prog i.on{background:var(--brand)}
+.prog-l{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-top:6px}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opts button{min-height:56px;border:0;border-radius:var(--r-in);background:var(--fill);font-size:16px;font-weight:600;text-align:left;padding:0 16px;cursor:pointer}
+.opts button:hover{background:var(--fill-2)}
+.sec-t{font-size:17px;font-weight:700;margin:8px 0 4px}
+.sec-s{font-size:13px;color:var(--mut)}
+
+/* 채팅 */
+.msgs{display:flex;flex-direction:column;gap:12px;padding:4px 0 12px}
+.msg{max-width:86%;display:flex;flex-direction:column;gap:4px}
+.msg.me{align-self:flex-end;align-items:flex-end}
+.bub{padding:10px 14px;border-radius:18px;font-size:15px;line-height:1.5;background:var(--fill)}
+.msg.me .bub{background:var(--brand);color:#fff;border-bottom-right-radius:6px}
+.msg:not(.me) .bub{border-bottom-left-radius:6px}
+.who{font-size:12px;color:var(--mut)}
+.orig{font-size:13px;color:var(--ink-2);background:#fff;box-shadow:inset 0 0 0 1px var(--fill-2);border-radius:12px;padding:8px 12px}
+.orig small{display:block;font-size:12px;color:var(--mut)}
+.tog{border:0;background:transparent;color:var(--brand-text);font-size:12px;font-weight:600;cursor:pointer;padding:0;min-height:24px}
+.quick{display:flex;flex-direction:column;gap:8px}
+.quick button{min-height:44px;border:0;border-radius:var(--r-in);background:#fff;box-shadow:inset 0 0 0 1px var(--fill-2);text-align:left;padding:8px 14px;font-size:14px;cursor:pointer;line-height:1.4}
+.quick button:hover{background:var(--soft)}
+.chat-cta{position:sticky;bottom:0;background:var(--soft);border-top:1px solid var(--hair);padding:12px 16px 16px;margin-top:auto}
+.chat-cta .cap{font-size:12px;color:var(--mut);margin-bottom:8px}
+
+/* 직원앱 · 상점앱 · 관리자 공통 */
+.s-top{padding:16px 16px 12px;background:var(--sec);position:sticky;top:0;z-index:2}
+.s-body{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px;flex:1}
+.card{background:#fff;border-radius:20px;padding:16px}
+.card h3{font-size:15px;font-weight:700;line-height:1.4}
+.card .cs{font-size:12px;color:var(--mut)}
+.o-card{background:#fff;border-radius:20px;padding:16px}
+.o-card.new{animation:newc 2.6s ease-out}
+@keyframes newc{0%,50%{box-shadow:0 0 0 2px var(--brand)}100%{box-shadow:0 0 0 0 transparent}}
+.o-h{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.o-t{font-size:17px;font-weight:700}
+.o-el{font-family:var(--mono);font-size:13px;color:var(--mut)}
+.o-el.late{color:var(--bad);font-weight:600}
+.o-items{margin-top:8px;font-size:15px;line-height:1.6}
+.o-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.o-act{display:flex;gap:8px;margin-top:12px}
+.o-act .btn{flex:1}
+.done-l{font-size:13px;color:var(--mut);padding:8px 4px 0}
+.done-row{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--ink-2);padding:8px 4px;border-top:1px solid var(--fill-2)}
+.thr{font-size:13px;color:var(--mut);display:flex;justify-content:space-between;gap:8px}
+
+/* 상점앱 */
+.steps{display:flex;gap:4px;margin-top:12px}
+.steps div{flex:1;min-width:0}
+.steps i{display:block;height:4px;border-radius:2px;background:var(--fill-2)}
+.steps div.on i{background:var(--brand)}
+.steps span{display:block;font-size:12px;color:var(--mut);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.steps div.on span{color:var(--ink);font-weight:600}
+.paper{position:relative;background:#FBF8F1;border-radius:14px;padding:16px 18px;box-shadow:inset 0 0 0 1px #ECE5D6;overflow:hidden}
+.paper h4{font-size:17px;font-weight:700;text-align:center;letter-spacing:.2em;margin:0 0 8px;color:#3B3127}
+.paper li{display:flex;justify-content:space-between;font-size:14px;padding:4px 0;color:#3B3127;border-bottom:1px dashed #E2D8C5}
+.paper li:last-child{border-bottom:0}
+.paper small{display:block;font-size:12px;color:#7A6A55;text-align:center;margin-top:8px}
+.scanline{position:absolute;left:0;right:0;height:40px;background:linear-gradient(rgba(49,130,246,0),rgba(49,130,246,.22));border-bottom:2px solid var(--brand);animation:scan 1.1s linear infinite}
+@keyframes scan{from{top:-40px}to{top:100%}}
+.rd{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--hair);font-size:14px}
+.rd:last-child{border-bottom:0}
+.sum{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.rv{background:#fff;border-radius:20px;padding:16px}
+.rv-h{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.rv-h b{font-size:15px}
+.rv-h small{display:block;font-size:12px;color:var(--mut);font-weight:400}
+.tr{margin-top:12px;border-radius:12px;background:var(--soft);padding:4px 12px}
+.tr-r{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;padding:8px 0;border-bottom:1px solid var(--fill-2);font-size:13px;line-height:1.5}
+.tr-r:last-child{border-bottom:0}
+.tr-r .lc{font-weight:700;color:var(--mut);font-size:12px;padding-top:1px}
+.tr-r .bk{color:var(--mut)}
+.tr-r .bk::before{content:"역번역 ";font-weight:600}
+mark{background:var(--warn-bg);color:var(--warn);border-radius:4px;padding:0 2px;font-weight:600}
+mark.bad{background:var(--bad-bg);color:var(--bad)}
+mark.ok{background:var(--ok-bg);color:var(--ok)}
+.why{font-size:13px;margin-top:8px;color:var(--ink-2)}
+.rv-a{display:flex;gap:8px;margin-top:12px}
+.rv-a .btn{flex:1}
+.own-cta{position:sticky;bottom:0;background:var(--sec);padding:12px 16px 16px;margin-top:auto;z-index:2}
+.own-cta .sub{font-size:12px;color:var(--mut);text-align:center;margin-bottom:8px}
+.chg{display:flex;gap:8px;align-items:flex-start;font-size:14px;padding:8px 0;border-bottom:1px solid var(--hair)}
+.chg:last-child{border-bottom:0}
+
+/* 관리자 */
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kpi{background:#fff;border-radius:20px;padding:14px}
+.kpi.main{background:var(--brand);color:#fff}
+.kpi .kl{font-size:12px;color:var(--mut);font-weight:500}
+.kpi.main .kl,.kpi.main .kd{color:rgba(255,255,255,.88)}
+.kpi .kv{font-size:24px;font-weight:700;line-height:1.3;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .kv small{font-size:13px;font-weight:600;margin-left:2px}
+.kpi .kd{font-size:12px;color:var(--brand-text);font-weight:600;margin-top:2px;min-height:18px}
+.chart svg{display:block;width:100%;height:auto}
+.lbar{display:grid;grid-template-columns:64px minmax(0,1fr) 40px;gap:8px;align-items:center;font-size:13px;padding:4px 0}
+.lbar .tk{height:8px;border-radius:4px;background:var(--fill)}
+.lbar .tk i{display:block;height:100%;border-radius:4px;background:var(--brand-tint-2)}
+.lbar .tk i.top{background:var(--brand)}
+.lbar .pc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.mt{width:100%;border-collapse:collapse;font-size:13px}
+.mt th{font-size:12px;color:var(--mut);font-weight:500;text-align:right;padding:6px 4px;border-bottom:1px solid var(--fill-2)}
+.mt th:first-child,.mt td:first-child{text-align:left}
+.mt td{padding:8px 4px;text-align:right;border-bottom:1px solid var(--hair);font-variant-numeric:tabular-nums}
+.mt tr.cur td{font-weight:700}
+.rule{font-family:var(--mono);font-size:12px;line-height:1.6;background:var(--ink);color:#E5E8EB;border-radius:12px;padding:12px;margin-top:8px;white-space:pre-wrap;word-break:break-all}
+.rule b{color:#8EC5FF;font-weight:600}
+.deny{margin-top:8px;font-size:13px;border-radius:12px;padding:10px 12px;background:var(--bad-bg);color:var(--bad)}
+.deny.ok{background:var(--ok-bg);color:var(--ok)}
+
+/* 아래 줄 */
+.below{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:16px;margin-top:16px}
+.bcard{background:#fff;border-radius:var(--r-card);padding:24px}
+.bcard h2{font-size:20px;font-weight:700;line-height:1.35}
+.bcard .bs{font-size:14px;color:var(--ink-2);margin-top:4px}
+.race{display:grid;gap:16px;margin-top:20px}
+.rc-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px}
+.rc-h b{font-size:15px}
+.rc-v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+.rc-v small{font-size:13px;color:var(--mut);font-weight:500;margin-left:4px}
+.rc-t{height:12px;border-radius:6px;background:var(--fill);margin-top:8px;overflow:hidden;display:flex}
+.rc-t i{display:block;height:100%}
+.rc-t .dl{background:var(--fill-2)}
+.rc-t .pt{background:var(--brand)}
+.rc-s{font-size:12px;color:var(--mut);margin-top:6px}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--mut);margin-top:12px;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.facts{margin-top:20px;display:grid;gap:8px;font-size:14px;color:var(--ink-2)}
+.facts li{padding-left:14px;position:relative}
+.facts li::before{content:"";position:absolute;left:0;top:10px;width:5px;height:5px;border-radius:50%;background:var(--mut-2)}
+.log{margin-top:16px;max-height:420px;overflow:auto}
+.lg{display:grid;grid-template-columns:44px 64px minmax(0,1fr);gap:8px;padding:10px 0;border-bottom:1px solid var(--hair);font-size:13px;align-items:start}
+.lg .tm{font-family:var(--mono);font-size:12px;color:var(--mut);padding-top:2px}
+.lg .ev{font-family:var(--mono);font-size:12px;color:var(--mut)}
+.sid{font-family:var(--mono);font-size:12px;font-weight:600;border-radius:6px;padding:1px 6px;display:inline-block}
+.sid.sodam{background:var(--brand-tint);color:var(--brand-text)}
+.sid.neurin{background:var(--ok-bg);color:var(--ok)}
+.scope{margin-top:16px;background:#fff;border-radius:var(--r-card);padding:24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 32px}
+.scope h2{font-size:17px;font-weight:700;grid-column:1/-1;margin-bottom:4px}
+.sc{display:grid;grid-template-columns:112px minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--hair);font-size:14px}
+.sc b{font-weight:600}
+.sc span{color:var(--ink-2)}
+footer{padding:32px 0 48px;font-size:13px;color:var(--mut)}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:16px;padding:10px 10px 10px 16px;font-size:14px;display:flex;align-items:center;gap:12px;box-shadow:var(--float);z-index:50;max-width:calc(100vw - 32px)}
+.toast button{height:36px;border:0;border-radius:10px;background:rgba(255,255,255,.16);color:#fff;font-weight:600;padding:0 12px;cursor:pointer;white-space:nowrap}
+
+@media (max-width:1279px){
+  .panes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .below{grid-template-columns:1fr}
+}
+@media (max-width:767px){
+  .wrap{padding:0 16px}
+  .top{padding-top:16px}
+  .topr{width:100%}
+  .topr .seg{flex:1}
+  .topr .seg button{flex:1;padding:0 8px}
+  .hero{grid-template-columns:1fr;padding-top:20px;padding-bottom:12px;gap:8px}
+  .hero h1{font-size:24px}
+  .hero p{font-size:14px}
+  .hero .try{display:none}
+  .mtabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;position:sticky;top:0;z-index:20;background:var(--sec);padding:8px 16px;margin:0 -16px 8px}
+  .mtabs button{height:48px;border:0;border-radius:12px;background:transparent;font-size:14px;font-weight:600;color:var(--mut);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px}
+  .mtabs button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(16,24,40,.08)}
+  .panes{grid-template-columns:1fr}
+  .pane{overflow:clip}
+  .pane:not(.on){display:none}
+  .pane-b{height:auto;overflow:visible;min-height:560px}
+  .g-top,.s-top{position:static}
+  .bcard{padding:20px}
+  .scope{grid-template-columns:1fr;padding:20px}
+  .sc{grid-template-columns:96px minmax(0,1fr)}
+  .btn.sm,.seg button,.seg.sm button,.g-lang,.step,.step button{height:44px;min-height:44px}
+  .g-lang{padding:0 14px}
+}
+</style>
+</head>
+<body>
+<div class="band"><b>제안용 데모 · 예시</b>가상 매장과 예시 숫자예요. 번역은 AI를 부르지 않고 미리 만든 문장을 보여 줘요.</div>
+<div class="wrap">
+  <header class="top">
+    <div class="brandbox">
+      <div class="mark" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 32 32"><path d="M7 9h18v11h-9l-5 4v-4H7z" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/><circle cx="24" cy="9" r="3.4" fill="#3182F6"/></svg></div>
+      <div><div class="prod">테이블말 <span class="ex">가상 브랜드</span></div><div class="prodsub">AI 다국어 매장 응대 · 고도화 뒤 모습 시연</div></div>
+    </div>
+    <div class="topr">
+      <span class="lbl" id="storeLbl">매장</span>
+      <div class="seg" role="group" aria-labelledby="storeLbl" id="storeSeg"></div>
+      <button class="btn wht sm" data-act="reset" type="button">처음부터</button>
+    </div>
+  </header>
+  <section class="hero">
+    <div>
+      <h1>손님이 누르면 직원앱과 지표가 같이 움직여요</h1>
+      <p>손님웹에서 언어를 고르고 주문 요청이나 직원 호출을 보내 보세요. 직원앱에 바로 뜨고, 확인을 누르면 관리자 지표가 바뀌어요. 상점앱에서 메뉴판을 읽혀 역번역 검수 후 승인하면 손님 메뉴에 올라가요.</p>
+      <div class="try"><span>위에서 매장을 바꾸면 네 화면이 그 매장 데이터만 보여 줘요</span><span>다른 탭에서 열어도 따라와요</span></div>
+    </div>
+  </section>
+  <nav class="mtabs" id="mtabs" aria-label="화면 고르기"></nav>
+  <main class="panes">
+    <section class="pane" id="p-guest" aria-label="손님웹">
+      <div class="pane-h"><div><h2>손님웹</h2><p>Next.js로 바꾼 뒤 · QR로 열림</p></div><button class="btn wht sm" data-act="newqr" type="button">QR 다시 찍기</button></div>
+      <div class="pane-b" id="b-guest"></div>
+    </section>
+    <section class="pane" id="p-staff" aria-label="직원앱">
+      <div class="pane-h"><div><h2>직원앱</h2><p>Flutter · Android·iOS</p></div><span class="live"><i></i>실시간 연결</span></div>
+      <div class="pane-b gry" id="b-staff"></div>
+    </section>
+    <section class="pane" id="p-owner" aria-label="상점앱">
+      <div class="pane-h"><div><h2>상점앱</h2><p>Flutter · 점주용 메뉴 관리</p></div></div>
+      <div class="pane-b gry" id="b-owner"></div>
+    </section>
+    <section class="pane" id="p-admin" aria-label="관리자">
+      <div class="pane-h"><div><h2>관리자</h2><p>Android · 매장별 운영지표</p></div></div>
+      <div class="pane-b gry" id="b-admin"></div>
+    </section>
+  </main>
+
+  <div class="below">
+    <section class="bcard" aria-labelledby="speedT">
+      <h2 id="speedT">손님웹 첫 화면, 얼마나 빨라질까요</h2>
+      <p class="bs">QR을 찍고 메뉴 글자가 보이기까지예요. 아래 숫자는 <span class="ex">예시</span> 예상치이고, 실제 값은 착수 1주차에 지금 손님웹을 재서 보고드려요.</p>
+      <div class="race" id="race"></div>
+      <div class="legend"><span><i style="background:var(--fill-2)"></i>받는 중(엔진·코드)</span><span><i style="background:var(--brand)"></i>그리는 중</span></div>
+      <div style="margin-top:16px"><button class="btn gry sm" data-act="race" type="button">두 방식 불러오기 다시 보기</button></div>
+      <ul class="facts">
+        <li>Flutter Web은 첫 그림 전에 렌더링 엔진(CanvasKit, Flutter 블로그 기준 약 1.5MB)과 앱 코드를 모두 받아야 해요.</li>
+        <li>Next.js는 서버가 메뉴 글자가 들어간 HTML을 먼저 보내서, 자바스크립트를 다 받기 전에도 메뉴가 보여요.</li>
+        <li>측정은 같은 휴대폰·같은 네트워크 조건으로 전환 전후를 재고(Lighthouse·실기기), 목표치는 1주차에 같이 정해요.</li>
+      </ul>
+    </section>
+    <section class="bcard" aria-labelledby="logT">
+      <h2 id="logT">방금 일어난 일</h2>
+      <p class="bs">모든 기록에 매장 ID(storeId)가 붙어요. 운영지표는 이 기록을 매장별로 모아 계산해요.</p>
+      <div class="log" id="log" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <section class="scope" aria-label="데모와 실제 작업">
+    <h2>데모가 흉내 낸 것과 실제 작업</h2>
+    <div class="sc"><b>번역·역번역</b><span>데모는 미리 만든 문장이에요. 실제는 지금 연동된 AI·OCR·번역을 그대로 쓰고, 주의어 점검과 승인 단계를 앞뒤에 붙여요.</span></div>
+    <div class="sc"><b>실시간 수신</b><span>데모는 같은 페이지 상태와 BroadcastChannel이에요. 실제는 기존 백엔드 구조(Firebase라면 실시간 구독)를 1주차에 확인하고 정해요.</span></div>
+    <div class="sc"><b>매장 분리</b><span>모든 문서에 storeId를 붙이고, 점주·직원은 자기 매장만, 관리자는 읽기만 하도록 권한 규칙을 다시 써요.</span></div>
+    <div class="sc"><b>13개 언어</b><span>데모는 한·영·일·중(간체)·베트남어 5개만 진짜 예시 문장이고, 나머지 8개는 영어로 보여요(예시). 언어는 파일 하나 추가로 늘어나게 해요.</span></div>
+    <div class="sc"><b>앱 알림</b><span>데모는 화면 표시만 해요. 실제 직원앱은 푸시 알림·소리·진동을 Android·iOS에서 확인해요.</span></div>
+    <div class="sc"><b>숫자</b><span>지표 기준값과 속도 숫자는 모두 예시예요. 데모에서 누른 만큼만 진짜로 더해져요.</span></div>
+  </section>
+  <footer>테이블말은 제안용 가상 브랜드예요. 매장 이름·메뉴·숫자는 모두 예시예요.</footer>
+</div>
+<div class="toast" id="toast" hidden role="status"><span id="toastT"></span><button type="button" id="toastB" hidden></button></div>
+
+<script>
+(function(){
+'use strict';
+/* ---------- 데이터 ---------- */
+const LANGS=[
+ {c:'ko',l:'한국어',k:'한국어',real:1},{c:'en',l:'English',k:'영어',real:1},{c:'ja',l:'日本語',k:'일본어',real:1},
+ {c:'zh',l:'简体中文',k:'중국어 간체',real:1},{c:'vi',l:'Tiếng Việt',k:'베트남어',real:1},
+ {c:'zht',l:'繁體中文',k:'중국어 번체'},{c:'th',l:'ไทย',k:'태국어'},{c:'id',l:'Bahasa Indonesia',k:'인도네시아어'},
+ {c:'es',l:'Español',k:'스페인어'},{c:'fr',l:'Français',k:'프랑스어'},{c:'de',l:'Deutsch',k:'독일어'},
+ {c:'ru',l:'Русский',k:'러시아어'},{c:'mn',l:'Монгол',k:'몽골어'}];
+const LMAP=Object.fromEntries(LANGS.map(x=>[x.c,x]));
+const eff=c=>LMAP[c]&&LMAP[c].real?c:'en';
+const REAL=['en','ja','zh','vi'];
+const LSHORT={ko:'한',en:'영',ja:'일',zh:'중',vi:'베'};
+
+const T={
+ ko:{menu:'메뉴',pick:'언어를 골라 주세요',pickS:'고른 언어로 메뉴와 채팅이 보여요',table:'{n}번 테이블',lang:'언어',call:'직원 호출',chat:'채팅',add:'담기',alg:'알레르기',noalg:'알레르기 표시 없음',s0:'안 매워요',s1:'조금 매워요',s2:'매워요',s3:'아주 매워요',newb:'새 메뉴',order:'주문 요청 {n}개 · {p}',review:'주문 확인',total:'합계',pay:'계산은 나가실 때 카운터에서 해요',send:'직원에게 주문 요청 보내기',empty:'아직 담은 메뉴가 없어요',sent:'주문 요청을 보냈어요',wait:'직원 확인을 기다리는 중이에요',acked:'직원이 확인했어요',served:'음식이 나왔어요',inS:'{s} 만에',back:'메뉴로 돌아가기',callT:'무엇이 필요하세요?',water:'물 주세요',plates:'앞접시 주세요',bill:'계산할게요',come:'잠깐 와 주세요',callSent:'직원에게 알렸어요',callAck:'직원이 가고 있어요',chatT:'직원과 채팅',chatH:'보내면 한국어로 번역돼서 직원에게 보여요',orig:'원문 보기',hide:'원문 닫기',staff:'직원',origK:'원문(한국어)',seen:'직원에게 보인 문장',quick:'자주 묻는 말',chatE:'궁금한 걸 골라 보내 보세요',s_req:'요청',s_ok:'확인',s_srv:'완료'},
+ en:{menu:'Menu',pick:'Choose your language',pickS:'The menu and chat will appear in this language',table:'Table {n}',lang:'Language',call:'Call staff',chat:'Chat',add:'Add',alg:'Allergens',noalg:'No listed allergens',s0:'Not spicy',s1:'Mildly spicy',s2:'Spicy',s3:'Very spicy',newb:'New',order:'Request order · {n} items · {p}',review:'Review your order',total:'Total',pay:'Please pay at the counter when you leave',send:'Send order request to staff',empty:'Your order is empty',sent:'Order request sent',wait:'Waiting for staff to confirm',acked:'Staff confirmed your order',served:'Your food has been served',inS:'in {s}',back:'Back to menu',callT:'What do you need?',water:'Water, please',plates:'Extra plates, please',bill:'Check, please',come:'Could you come here?',callSent:'Staff has been notified',callAck:'Staff is on the way',chatT:'Chat with staff',chatH:'Your message is translated into Korean for staff',orig:'Show original',hide:'Hide original',staff:'Staff',origK:'Original (Korean)',seen:'What staff sees',quick:'Quick questions',chatE:'Pick a question to send',s_req:'Sent',s_ok:'Confirmed',s_srv:'Served'},
+ ja:{menu:'メニュー',pick:'言語を選んでください',pickS:'選んだ言語でメニューとチャットが表示されます',table:'{n}番テーブル',lang:'言語',call:'スタッフを呼ぶ',chat:'チャット',add:'追加',alg:'アレルギー',noalg:'表示アレルゲンなし',s0:'辛くない',s1:'少し辛い',s2:'辛い',s3:'とても辛い',newb:'新メニュー',order:'注文をリクエスト（{n}点）· {p}',review:'ご注文の確認',total:'合計',pay:'お会計はお帰りの際にレジでお願いします',send:'スタッフに注文を送る',empty:'まだ何も選んでいません',sent:'注文リクエストを送りました',wait:'スタッフの確認を待っています',acked:'スタッフが確認しました',served:'お料理をお持ちしました',inS:'{s}で確認',back:'メニューに戻る',callT:'ご用件をお選びください',water:'お水をください',plates:'取り皿をください',bill:'お会計お願いします',come:'ちょっと来てください',callSent:'スタッフに知らせました',callAck:'スタッフが向かっています',chatT:'スタッフとチャット',chatH:'メッセージは韓国語に翻訳されて届きます',orig:'原文を見る',hide:'原文を閉じる',staff:'スタッフ',origK:'原文（韓国語）',seen:'スタッフに表示される文',quick:'よくある質問',chatE:'質問を選んで送ってください',s_req:'送信',s_ok:'確認',s_srv:'完了'},
+ zh:{menu:'菜单',pick:'请选择语言',pickS:'菜单和聊天将以所选语言显示',table:'{n}号桌',lang:'语言',call:'呼叫服务员',chat:'聊天',add:'加入',alg:'过敏原',noalg:'无标示过敏原',s0:'不辣',s1:'微辣',s2:'中辣',s3:'特辣',newb:'新品',order:'提交点单（{n}件）· {p}',review:'确认点单',total:'合计',pay:'离开时请在柜台结账',send:'发送给服务员',empty:'还没有选择菜品',sent:'点单已发送',wait:'等待服务员确认',acked:'服务员已确认',served:'菜已上桌',inS:'{s}内确认',back:'返回菜单',callT:'需要什么帮助？',water:'请给我水',plates:'请给我小碟子',bill:'买单',come:'请过来一下',callSent:'已通知服务员',callAck:'服务员正在过来',chatT:'与服务员聊天',chatH:'消息会翻译成韩语发给服务员',orig:'查看原文',hide:'收起原文',staff:'服务员',origK:'原文（韩语）',seen:'服务员看到的内容',quick:'常用问题',chatE:'选择一个问题发送',s_req:'已发送',s_ok:'已确认',s_srv:'已上桌'},
+ vi:{menu:'Thực đơn',pick:'Vui lòng chọn ngôn ngữ',pickS:'Thực đơn và tin nhắn sẽ hiển thị bằng ngôn ngữ này',table:'Bàn số {n}',lang:'Ngôn ngữ',call:'Gọi nhân viên',chat:'Nhắn tin',add:'Thêm',alg:'Dị ứng',noalg:'Không ghi chất gây dị ứng',s0:'Không cay',s1:'Hơi cay',s2:'Cay',s3:'Rất cay',newb:'Món mới',order:'Gửi yêu cầu · {n} món · {p}',review:'Xác nhận món',total:'Tổng',pay:'Vui lòng thanh toán tại quầy khi ra về',send:'Gửi yêu cầu cho nhân viên',empty:'Bạn chưa chọn món nào',sent:'Đã gửi yêu cầu gọi món',wait:'Đang chờ nhân viên xác nhận',acked:'Nhân viên đã xác nhận',served:'Món ăn đã được mang ra',inS:'sau {s}',back:'Quay lại thực đơn',callT:'Bạn cần gì?',water:'Cho tôi nước',plates:'Cho tôi thêm chén đĩa',bill:'Tính tiền giúp tôi',come:'Bạn qua đây một chút được không?',callSent:'Đã báo cho nhân viên',callAck:'Nhân viên đang đến',chatT:'Nhắn tin với nhân viên',chatH:'Tin nhắn sẽ được dịch sang tiếng Hàn cho nhân viên',orig:'Xem bản gốc',hide:'Ẩn bản gốc',staff:'Nhân viên',origK:'Bản gốc (tiếng Hàn)',seen:'Nhân viên sẽ thấy',quick:'Câu hỏi nhanh',chatE:'Chọn một câu hỏi để gửi',s_req:'Đã gửi',s_ok:'Đã nhận',s_srv:'Đã phục vụ'}
+};
+const ALG={
+ beef:{ko:'소고기',en:'Beef',ja:'牛肉',zh:'牛肉',vi:'Thịt bò'},
+ pork:{ko:'돼지고기',en:'Pork',ja:'豚肉',zh:'猪肉',vi:'Thịt heo'},
+ egg:{ko:'달걀',en:'Egg',ja:'卵',zh:'鸡蛋',vi:'Trứng'},
+ soy:{ko:'대두',en:'Soy',ja:'大豆',zh:'大豆',vi:'Đậu nành'},
+ wheat:{ko:'밀',en:'Wheat',ja:'小麦',zh:'小麦',vi:'Lúa mì'},
+ shrimp:{ko:'새우',en:'Shrimp',ja:'えび',zh:'虾',vi:'Tôm'},
+ squid:{ko:'오징어',en:'Squid',ja:'いか',zh:'鱿鱼',vi:'Mực'},
+ milk:{ko:'우유',en:'Milk',ja:'乳',zh:'牛奶',vi:'Sữa'},
+ alcohol:{ko:'술(알코올)',en:'Alcohol',ja:'アルコール',zh:'含酒精',vi:'Có cồn'}
+};
+const CALLS=['water','plates','bill','come'];
+const CALL_KO={water:'물 요청',plates:'앞접시 요청',bill:'계산 요청',come:'잠깐 와 달라는 요청'};
+
+function I(id,price,spice,alg,name,desc,cat){return {id,price,spice,alg,name,desc,cat};}
+const STORES={
+ sodam:{id:'sodam',name:'소담 비빔밥',latin:'Sodam Bibimbap',area:'전주 덕진구 · 예시',table:3,staff:'김*연',owner:'박*희',
+  menu:[
+   I('bibim',12000,1,['beef','egg','soy','wheat'],
+    {ko:'전주비빔밥',en:'Jeonju bibimbap',ja:'全州ビビンバ',zh:'全州拌饭',vi:'Cơm trộn Jeonju'},
+    {ko:'고슬밥에 나물 열 가지, 소고기 볶음, 달걀노른자, 고추장',en:'Rice with ten kinds of seasoned vegetables, stir-fried beef, egg yolk and gochujang (red pepper paste)',ja:'ご飯に10種類のナムル、牛肉炒め、卵黄、コチュジャン',zh:'米饭配十种拌菜、炒牛肉、蛋黄和辣椒酱',vi:'Cơm với mười loại rau trộn, thịt bò xào, lòng đỏ trứng và tương ớt'},'식사'),
+   I('kong',9000,1,['egg','soy'],
+    {ko:'콩나물국밥',en:'Bean sprout soup with rice',ja:'コンナムルクッパ（豆もやしスープご飯）',zh:'豆芽汤饭',vi:'Canh cơm giá đỗ'},
+    {ko:'콩나물 국물에 밥, 수란을 곁들여요',en:'Bean sprout broth with rice, served with a soft poached egg',ja:'豆もやしのスープにご飯、半熟の落とし卵を添えて',zh:'豆芽汤配米饭，附水波蛋',vi:'Canh giá đỗ ăn với cơm, kèm trứng chần'},'식사'),
+   I('yuk',15000,1,['beef','egg','soy','wheat'],
+    {ko:'육회비빔밥',en:'Raw beef bibimbap (yukhoe)',ja:'ユッケビビンバ',zh:'生拌牛肉拌饭',vi:'Cơm trộn bò sống (yukhoe)'},
+    {ko:'양념한 생소고기(육회)와 달걀노른자를 올린 비빔밥',en:'Bibimbap topped with seasoned raw beef and raw egg yolk',ja:'味付けした生の牛肉（ユッケ）と生卵黄をのせたビビンバ',zh:'拌饭上放调味生牛肉和生蛋黄',vi:'Cơm trộn với thịt bò sống ướp gia vị và lòng đỏ trứng sống'},'식사'),
+   I('pajeon',16000,0,['shrimp','squid','wheat','egg'],
+    {ko:'해물파전',en:'Seafood green onion pancake',ja:'海鮮チヂミ',zh:'海鲜葱饼',vi:'Bánh xèo hải sản hành lá'},
+    {ko:'새우·오징어·쪽파를 넣은 전',en:'Savory pancake with shrimp, squid and green onions',ja:'えび・いか・ねぎ入りのチヂミ',zh:'加入虾、鱿鱼和葱的煎饼',vi:'Bánh chiên với tôm, mực và hành lá'},'곁들임'),
+   I('mak',6000,0,['alcohol'],
+    {ko:'막걸리',en:'Makgeolli (rice wine)',ja:'マッコリ',zh:'马格利米酒',vi:'Rượu gạo Makgeolli'},
+    {ko:'쌀로 빚은 막걸리 한 병(750ml, 6도)',en:'A bottle of Korean rice wine (750 ml, 6% ABV)',ja:'米のお酒マッコリ1本（750ml・6度）',zh:'韩国米酒一瓶（750毫升，6度）',vi:'Một chai rượu gạo Hàn Quốc (750 ml, 6 độ)'},'술')
+  ],
+  week:[38,52,47,61,88,96,41],ordered:24,langs:{ko:15,ja:9,zh:7,en:6,vi:4},respN:18,respAvg:72,
+  q:[{ko:'비빔밥 많이 매워요?',en:'Is the bibimbap very spicy?',ja:'ビビンバはとても辛いですか？',zh:'拌饭很辣吗？',vi:'Cơm trộn có cay lắm không?'},
+     {ko:'돼지고기 안 들어간 메뉴가 있어요?',en:'Do you have dishes without pork?',ja:'豚肉が入っていない料理はありますか？',zh:'有不含猪肉的菜吗？',vi:'Có món nào không có thịt heo không?'},
+     {ko:'카드로 계산할 수 있어요?',en:'Can I pay by card?',ja:'カードで払えますか？',zh:'可以刷卡吗？',vi:'Tôi có thể trả bằng thẻ không?'}],
+  r:[{ko:'조금 매워요. 고추장을 따로 드릴 수 있어요.',en:"It's mildly spicy. We can serve the gochujang on the side.",ja:'少し辛いです。コチュジャンを別にお出しできます。',zh:'微辣。辣椒酱可以单独给您。',vi:'Hơi cay thôi ạ. Chúng tôi có thể để tương ớt riêng.'},
+     {ko:'콩나물국밥과 해물파전에는 돼지고기가 없어요.',en:'The bean sprout soup with rice and the seafood pancake have no pork.',ja:'コンナムルクッパと海鮮チヂミには豚肉は入っていません。',zh:'豆芽汤饭和海鲜煎饼不含猪肉。',vi:'Canh cơm giá đỗ và bánh xèo hải sản không có thịt heo.'},
+     {ko:'네, 카드 돼요. 나가실 때 카운터에서 계산해 주세요.',en:'Yes, we take cards. Please pay at the counter when you leave.',ja:'はい、カード使えます。お帰りの際にレジでお支払いください。',zh:'可以刷卡。离开时请在柜台结账。',vi:'Dạ được ạ. Quý khách vui lòng thanh toán tại quầy khi ra về.'},
+     {ko:'잠시만요, 바로 갈게요.',en:"One moment, I'll be right there.",ja:'少々お待ちください、すぐ伺います。',zh:'请稍等，我马上过来。',vi:'Xin chờ một chút, tôi đến ngay.'}],
+  paper:[['전주비빔밥','12,000'],['콩나물국밥 (새우젓 간)','9,000'],['육회비빔밥','15,000'],['제육덮밥','10,000'],['해물파전','16,000'],['막걸리','6,000']],
+  seedOrders:[{t:7,lang:'en',items:[['bibim',2]],min:26},{t:2,lang:'ko',items:[['kong',1],['pajeon',1]],min:14}],
+  scan:[
+   {id:'jeyuk',kind:'new',label:'제육덮밥',price:10000,
+    issue:'missing',why:'영어·베트남어 번역에서 \'돼지고기\'가 \'고기\'로 뭉개졌어요. 알레르기 표시에도 돼지고기가 없어요. 돼지고기를 안 먹는 손님(종교·식이)이 주문할 수 있어요.',
+    rows:[{l:'en',bad:'Spicy stir-fried <mark class="bad">meat</mark> rice bowl',badBk:'매운 <mark class="bad">고기</mark>볶음 덮밥',fix:'Spicy stir-fried <mark class="ok">pork</mark> rice bowl',fixBk:'매운 <mark class="ok">돼지고기</mark>볶음 덮밥'},
+          {l:'ja',ok:'豚肉の甘辛炒め丼',okBk:'<mark>돼지고기</mark> 매콤달콤 볶음 덮밥'},
+          {l:'zh',ok:'辣炒猪肉盖饭',okBk:'매운 <mark>돼지고기</mark> 볶음 덮밥'},
+          {l:'vi',bad:'Cơm <mark class="bad">thịt</mark> xào cay',badBk:'매운 <mark class="bad">고기</mark>볶음 밥',fix:'Cơm <mark class="ok">thịt heo</mark> xào cay',fixBk:'매운 <mark class="ok">돼지고기</mark>볶음 밥'}],
+    algBad:'대두 · 밀',algFix:'돼지고기 · 대두 · 밀',
+    item:I('jeyuk',10000,2,['pork','soy','wheat'],
+     {ko:'제육덮밥',en:'Spicy stir-fried pork rice bowl',ja:'豚肉の甘辛炒め丼（チェユクトッパプ）',zh:'辣炒猪肉盖饭',vi:'Cơm thịt heo xào cay'},
+     {ko:'고추장 양념 돼지고기 볶음을 올린 덮밥',en:'Pork stir-fried in gochujang sauce over rice',ja:'コチュジャンで炒めた豚肉をのせた丼',zh:'辣椒酱炒猪肉盖在米饭上',vi:'Thịt heo xào sốt tương ớt ăn với cơm'},'식사')},
+   {id:'kong',kind:'changed',label:'콩나물국밥',price:9000,
+    issue:'missing',why:'새 설명의 \'새우젓\'이 영어 번역에서 빠졌어요. 새우는 알레르기 표시 대상이라 표시도 같이 넣어야 해요.',
+    rows:[{l:'en',bad:'Bean sprout broth with rice and a soft poached egg, <mark class="bad">lightly salted</mark>',badBk:'콩나물 국물에 밥과 수란, <mark class="bad">살짝 간함</mark>',fix:'Bean sprout broth with rice and a soft poached egg, seasoned with <mark class="ok">salted shrimp</mark>',fixBk:'콩나물 국물에 밥과 수란, <mark class="ok">새우젓</mark>으로 간'},
+          {l:'ja',ok:'豆もやしのスープにご飯と落とし卵、アミの塩辛で味付け',okBk:'콩나물국에 밥과 수란, <mark>새우젓</mark>으로 간'},
+          {l:'zh',ok:'豆芽汤配米饭和水波蛋，用虾酱调味',okBk:'콩나물국에 밥과 수란, <mark>새우젓</mark>으로 간'},
+          {l:'vi',ok:'Canh giá đỗ ăn với cơm và trứng chần, nêm mắm tôm',okBk:'콩나물국에 밥과 수란, <mark>새우젓</mark>으로 간'}],
+    algBad:'달걀 · 대두',algFix:'달걀 · 대두 · 새우',
+    patch:{alg:['egg','soy','shrimp'],desc:{ko:'콩나물 국물에 밥과 수란, 새우젓으로 간을 해요',en:'Bean sprout broth with rice and a soft poached egg, seasoned with salted shrimp',ja:'豆もやしのスープにご飯と落とし卵、アミの塩辛で味付け',zh:'豆芽汤配米饭和水波蛋，用虾酱调味',vi:'Canh giá đỗ ăn với cơm và trứng chần, nêm mắm tôm'}}},
+   {id:'yuk',kind:'same',label:'육회비빔밥',price:15000,issue:'caution',why:'날것과 소고기는 손님이 꼭 알아야 하는 말이라 모든 언어에 남아 있는지 확인했어요. 점주님이 한 번 더 보고 확인을 눌러 주세요.',
+    rows:[{l:'en',ok:'Raw beef bibimbap (yukhoe)',okBk:'<mark>생소고기</mark> 비빔밥'},{l:'ja',ok:'ユッケビビンバ · 生の牛肉',okBk:'육회 비빔밥 · <mark>생소고기</mark>'},{l:'zh',ok:'生拌牛肉拌饭',okBk:'<mark>생소고기</mark> 비빔밥'},{l:'vi',ok:'Cơm trộn bò sống (yukhoe)',okBk:'<mark>생소고기</mark> 비빔밥'}]},
+   {id:'bibim',kind:'same',label:'전주비빔밥',price:12000,issue:'none'},
+   {id:'pajeon',kind:'same',label:'해물파전',price:16000,issue:'none'},
+   {id:'mak',kind:'same',label:'막걸리',price:6000,issue:'none',note:'술 표시 있음'}
+  ]},
+ neurin:{id:'neurin',name:'느린오후 카페',latin:'Neurin Ohu Cafe',area:'전주 덕진구 · 예시',table:5,staff:'이*준',owner:'최*민',
+  menu:[
+   I('ame',4500,0,[],{ko:'아메리카노',en:'Americano',ja:'アメリカーノ',zh:'美式咖啡',vi:'Americano'},
+    {ko:'에스프레소에 뜨거운 물',en:'Espresso with hot water',ja:'エスプレッソをお湯で割ったコーヒー',zh:'浓缩咖啡加热水',vi:'Espresso pha với nước nóng'},'커피'),
+   I('ssuk',6000,0,['milk'],{ko:'쑥라떼',en:'Mugwort latte',ja:'よもぎラテ',zh:'艾草拿铁',vi:'Latte ngải cứu'},
+    {ko:'쑥 가루와 우유로 만든 라떼',en:'Latte made with mugwort powder and milk',ja:'よもぎパウダーと牛乳のラテ',zh:'用艾草粉和牛奶制作的拿铁',vi:'Latte làm từ bột ngải cứu và sữa'},'라떼'),
+   I('yuja',5500,0,[],{ko:'유자차',en:'Yuja (citron) tea',ja:'ゆず茶',zh:'柚子茶',vi:'Trà thanh yên Yuja'},
+    {ko:'직접 담근 유자청으로 만든 따뜻한 차',en:'Hot tea made with house-made yuja marmalade',ja:'自家製ゆず茶ベースで作る温かいお茶',zh:'用自制柚子酱冲泡的热茶',vi:'Trà nóng pha từ mứt thanh yên nhà làm'},'차'),
+   I('cake',6500,0,['milk','egg','wheat'],{ko:'단호박 케이크',en:'Sweet pumpkin cake',ja:'かぼちゃケーキ',zh:'南瓜蛋糕',vi:'Bánh bí đỏ'},
+    {ko:'단호박을 넣은 촉촉한 케이크 한 조각',en:'A moist slice of cake made with kabocha squash',ja:'かぼちゃを使ったしっとりケーキ1切れ',zh:'加入南瓜的湿润蛋糕一块',vi:'Một miếng bánh mềm ẩm làm từ bí đỏ'},'디저트')
+  ],
+  week:[22,19,25,31,44,52,17],ordered:8,langs:{ko:12,en:2,ja:2,zh:1,vi:0},respN:6,respAvg:125,
+  q:[{ko:'디카페인으로 바꿀 수 있어요?',en:'Can I get it decaf?',ja:'デカフェにできますか？',zh:'可以换成低因咖啡吗？',vi:'Có thể đổi sang loại không caffeine không?'},
+     {ko:'와이파이 비밀번호가 뭐예요?',en:"What's the Wi-Fi password?",ja:'Wi-Fiのパスワードは何ですか？',zh:'Wi-Fi密码是多少？',vi:'Mật khẩu Wi-Fi là gì?'},
+     {ko:'카드로 계산할 수 있어요?',en:'Can I pay by card?',ja:'カードで払えますか？',zh:'可以刷卡吗？',vi:'Tôi có thể trả bằng thẻ không?'}],
+  r:[{ko:'네, 아메리카노와 라떼는 디카페인으로 바꿀 수 있어요. 500원 추가예요.',en:'Yes, americanos and lattes can be made decaf for an extra ₩500.',ja:'はい、アメリカーノとラテはデカフェにできます。500ウォン追加です。',zh:'可以，美式和拿铁可以换成低因，加500韩元。',vi:'Dạ được, americano và latte có thể đổi sang loại không caffeine, thêm 500 won.'},
+     {ko:'와이파이 비밀번호는 영수증 아래에 적혀 있어요.',en:'The Wi-Fi password is printed at the bottom of your receipt.',ja:'Wi-Fiのパスワードはレシートの下に書いてあります。',zh:'Wi-Fi密码印在小票下方。',vi:'Mật khẩu Wi-Fi in ở cuối hóa đơn.'},
+     {ko:'네, 카드 돼요. 나가실 때 카운터에서 계산해 주세요.',en:'Yes, we take cards. Please pay at the counter when you leave.',ja:'はい、カード使えます。お帰りの際にレジでお支払いください。',zh:'可以刷卡。离开时请在柜台结账。',vi:'Dạ được ạ. Quý khách vui lòng thanh toán tại quầy khi ra về.'},
+     {ko:'잠시만요, 바로 갈게요.',en:"One moment, I'll be right there.",ja:'少々お待ちください、すぐ伺います。',zh:'请稍等，我马上过来。',vi:'Xin chờ một chút, tôi đến ngay.'}],
+  paper:[['아메리카노','4,500'],['쑥라떼','6,000'],['흑임자 라떼','6,000'],['유자차','5,500'],['단호박 케이크','6,500']],
+  seedOrders:[{t:1,lang:'ko',items:[['ame',2]],min:18}],
+  scan:[
+   {id:'heuk',kind:'new',label:'흑임자 라떼',price:6000,issue:'missing',why:'번역은 맞는데 알레르기 표시가 비어 있어요. 라떼라서 \'우유\'가 있어야 해요.',
+    rows:[{l:'en',ok:'Black sesame latte',okBk:'흑임자 라떼'},{l:'ja',ok:'黒ごまラテ',okBk:'흑임자 라떼'},{l:'zh',ok:'黑芝麻拿铁',okBk:'흑임자 라떼'},{l:'vi',ok:'Latte mè đen',okBk:'흑임자 라떼'}],
+    algBad:'<mark class="bad">없음</mark>',algFix:'<mark class="ok">우유</mark>',
+    item:I('heuk',6000,0,['milk'],{ko:'흑임자 라떼',en:'Black sesame latte',ja:'黒ごまラテ',zh:'黑芝麻拿铁',vi:'Latte mè đen'},
+     {ko:'볶은 검은깨를 갈아 넣은 고소한 라떼',en:'Nutty latte with ground roasted black sesame',ja:'炒った黒ごまをすりつぶした香ばしいラテ',zh:'加入研磨烤黑芝麻的香浓拿铁',vi:'Latte béo thơm với mè đen rang xay'},'라떼')},
+   {id:'ame',kind:'same',label:'아메리카노',price:4500,issue:'none'},
+   {id:'ssuk',kind:'same',label:'쑥라떼',price:6000,issue:'none'},
+   {id:'yuja',kind:'same',label:'유자차',price:5500,issue:'none'},
+   {id:'cake',kind:'same',label:'단호박 케이크',price:6500,issue:'none'}
+  ]}
+};
+const SIDS=['sodam','neurin'];
+
+/* ---------- 상태 ---------- */
+const clone=o=>JSON.parse(JSON.stringify(o));
+let S;
+function fresh(){
+  const now=Date.now();
+  const s={store:'sodam',tab:'guest',log:[],seq:0,stores:{}};
+  SIDS.forEach(id=>{
+    const D=STORES[id];
+    const st={id,menu:clone(D.menu),ver:id==='sodam'?12:7,newIds:[],
+      guest:{screen:'lang',lang:null,cart:{},order:null,call:null,session:null,showOrig:{}},
+      orders:[],calls:[],chat:[],staffTab:'orders',staffOrig:{},
+      scan:{stage:'idle',fixed:{},acked:{},open:null},
+      d:{qr:0,ordered:0,langs:{},callResp:[],orderResp:[]},perm:null,no:0};
+    D.seedOrders.forEach(o=>{st.no++;const c=now-o.min*60000;st.orders.push({id:'seed'+st.no,no:st.no,table:o.t,lang:o.lang,items:o.items,createdAt:c,ackAt:c+48000,doneAt:c+9*60000,seed:1});});
+    s.stores[id]=st;
+  });
+  return s;
+}
+
+/* ---------- 도우미 ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const won=(n,l)=>l==='ko'?n.toLocaleString('ko-KR')+'원':'₩'+n.toLocaleString('en-US');
+const hhmm=t=>{const d=new Date(t);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');};
+function dur(ms){const s=Math.max(0,Math.round(ms/1000));if(s<60)return s+'초';return Math.floor(s/60)+'분 '+String(s%60).padStart(2,'0')+'초';}
+function durL(ms,l){const s=Math.max(0,Math.round(ms/1000));const m=Math.floor(s/60),r=s%60;
+  if(l==='ko')return dur(ms);if(l==='ja')return m?m+'分'+r+'秒':r+'秒';if(l==='zh')return m?m+'分'+r+'秒':r+'秒';if(l==='vi')return m?m+' phút '+r+' giây':r+' giây';return m?m+'m '+r+'s':r+'s';}
+function clock(ms){const s=Math.max(0,Math.floor(ms/1000));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+function t(l,k,v){let x=(T[l]&&T[l][k])||T.en[k]||k;if(v)Object.keys(v).forEach(n=>{x=x.split('{'+n+'}').join(v[n]);});return x;}
+const cur=()=>S.stores[S.store];
+const D=()=>STORES[S.store];
+const item=(st,id)=>st.menu.find(m=>m.id===id);
+const isMobile=()=>window.matchMedia('(max-width:767px)').matches;
+const ag=(o)=>(/[가-힣]$/.test(o)&&((o.charCodeAt(o.length-1)-0xAC00)%28)>0);
+
+/* ---------- 동작 (다른 탭과 같이) ---------- */
+let bc=null;try{bc=new BroadcastChannel('tablemal-demo');bc.onmessage=e=>{if(e.data&&e.data.type){apply(e.data,true);render();}};}catch(e){bc=null;}
+function dispatch(a){a.at=a.at||Date.now();a.sid=a.sid||S.store;apply(a,false);if(bc){try{bc.postMessage(a);}catch(e){}}render();}
+function log(sid,app,text,ev,at){S.log.unshift({sid,app,text,ev,at:at||Date.now()});if(S.log.length>60)S.log.pop();}
+
+function startSession(st,at){
+  st.guest={screen:'lang',lang:null,cart:{},order:null,call:null,session:{id:'s'+at,lang:null,ordered:false},showOrig:{}};
+  st.d.qr++;
+  log(st.id,'손님웹','QR로 손님웹 열림 · '+STORES[st.id].table+'번 테이블','qr_open',at);
+}
+function apply(a,remote){
+  if(a.type==='reset'){S=fresh();startSession(S.stores.sodam,a.at);return;}
+  if(a.type==='store'){ if(!remote){S.store=a.to;} const st=S.stores[a.to]; if(!st.guest.session)startSession(st,a.at); return;}
+  const st=S.stores[a.sid];if(!st)return;const g=st.guest;const Dd=STORES[a.sid];
+  switch(a.type){
+   case 'newqr': startSession(st,a.at);break;
+   case 'lang':{const s=g.session;if(s){if(s.lang&&st.d.langs[s.lang])st.d.langs[s.lang]--;st.d.langs[a.l]=(st.d.langs[a.l]||0)+1;s.lang=a.l;}
+     g.lang=a.l;g.screen='menu';log(st.id,'손님웹',LMAP[a.l].k+' 선택'+(LMAP[a.l].real?'':' (데모는 영어로 표시)'),'lang_select',a.at);break;}
+   case 'gscreen': g.screen=a.s;break;
+   case 'cart':{const n=(g.cart[a.id]||0)+a.n;if(n<=0)delete g.cart[a.id];else g.cart[a.id]=n;break;}
+   case 'order':{const items=Object.entries(g.cart);if(!items.length)break;st.no++;
+     const o={id:a.oid,no:st.no,table:Dd.table,lang:g.lang||'ko',items,createdAt:a.at,ackAt:null,doneAt:null,isNew:1};
+     st.orders.unshift(o);g.cart={};g.order=o.id;g.screen='status';
+     if(g.session&&!g.session.ordered){g.session.ordered=true;st.d.ordered++;}
+     log(st.id,'손님웹','주문 요청 #'+o.no+' · '+items.map(([id,n])=>item(st,id).name.ko+'×'+n).join(', ')+' ('+LMAP[o.lang].k+')','order_request',a.at);break;}
+   case 'oack':{const o=st.orders.find(x=>x.id===a.oid);if(!o||o.ackAt)break;o.ackAt=a.at;o.isNew=0;st.d.orderResp.push(a.at-o.createdAt);
+     log(st.id,'직원앱','주문 #'+o.no+' 확인 · '+dur(a.at-o.createdAt)+' 만에','order_ack',a.at);break;}
+   case 'odone':{const o=st.orders.find(x=>x.id===a.oid);if(!o||o.doneAt)break;o.doneAt=a.at;log(st.id,'직원앱','주문 #'+o.no+' 서빙 완료','order_served',a.at);break;}
+   case 'call':{const c={id:a.cid,table:Dd.table,lang:g.lang||'ko',kind:a.k,createdAt:a.at,ackAt:null,isNew:1};st.calls.unshift(c);g.call=c.id;
+     log(st.id,'손님웹','직원 호출 · '+CALL_KO[a.k]+' ('+LMAP[c.lang].k+')','call_request',a.at);break;}
+   case 'cack':{const c=st.calls.find(x=>x.id===a.cid);if(!c||c.ackAt)break;c.ackAt=a.at;c.isNew=0;st.d.callResp.push(a.at-c.createdAt);
+     log(st.id,'직원앱','호출 응답 · '+CALL_KO[c.kind]+' · '+dur(a.at-c.createdAt)+' 만에','call_ack',a.at);break;}
+   case 'gmsg':{const q=Dd.q[a.i];const l=g.lang||'ko';st.chat.push({id:'m'+a.at,from:'guest',lang:l,i:a.i,at:a.at,read:false});
+     log(st.id,'손님웹','채팅 · '+LMAP[l].k+' → 한국어 번역 · "'+q.ko+'"','chat_message',a.at);break;}
+   case 'smsg':{const l=g.lang||'ko';st.chat.forEach(m=>m.read=true);st.chat.push({id:'m'+a.at,from:'staff',lang:l,i:a.i,at:a.at});
+     log(st.id,'직원앱','채팅 답장 · 한국어 → '+LMAP[l].k+' · "'+Dd.r[a.i].ko+'"','chat_reply',a.at);break;}
+   case 'stab': st.staffTab=a.v;break;
+   case 'scan':{const sc=st.scan;
+     if(a.v==='ocr'){sc.stage='ocr';log(st.id,'상점앱','메뉴판 사진 올림 · 글자 읽는 중','menu_scan',a.at);}
+     else if(a.v==='read'){sc.stage='read';log(st.id,'상점앱','메뉴 '+Dd.scan.length+'개 읽음 (새 메뉴·바뀐 설명 포함)','menu_ocr_done',a.at);}
+     else if(a.v==='trans'){sc.stage='trans';}
+     else if(a.v==='review'){sc.stage='review';const n=Dd.scan.filter(x=>x.issue==='missing'||x.issue==='caution').length;log(st.id,'상점앱','4개 언어 번역 + 역번역 끝 · 확인할 것 '+n+'개','menu_translate',a.at);}
+     break;}
+   case 'fix':{st.scan.fixed[a.id]=true;log(st.id,'상점앱',Dd.scan.find(x=>x.id===a.id).label+' 추천 번역으로 고침','review_fix',a.at);break;}
+   case 'ack':{st.scan.acked[a.id]=true;log(st.id,'상점앱',Dd.scan.find(x=>x.id===a.id).label+' 주의어 확인함','review_ack',a.at);break;}
+   case 'open': st.scan.open=st.scan.open===a.id?null:a.id;break;
+   case 'approve':{if(pending(st))break;const sc=st.scan;st.ver++;st.newIds=[];
+     Dd.scan.forEach(x=>{if(x.item&&!item(st,x.id)){const it=clone(x.item);const idx=x.id==='jeyuk'?1:2;st.menu.splice(idx,0,it);st.newIds.push(x.id);}
+       if(x.patch){const m=item(st,x.id);Object.assign(m,clone(x.patch));}});
+     sc.stage='done';sc.at=a.at;log(st.id,'상점앱','점주 승인 · 메뉴 v'+st.ver+' 손님웹에 배포','menu_publish',a.at);break;}
+   case 'perm':{st.perm={at:a.at};const other=SIDS.find(x=>x!==st.id);log(st.id,'규칙',STORES[st.id].name+' 직원 계정으로 '+STORES[other].name+' 주문 읽기 → 거부','permission_denied',a.at);break;}
+   case 'gorig':{g.showOrig[a.mid]=!g.showOrig[a.mid];break;}
+   case 'sorig':{st.staffOrig[a.mid]=!st.staffOrig[a.mid];break;}
+  }
+}
+function pending(st){const Dd=STORES[st.id];return Dd.scan.filter(x=>(x.issue==='missing'&&!st.scan.fixed[x.id])||(x.issue==='caution'&&!st.scan.acked[x.id])).length;}
+
+/* ---------- 지표 ---------- */
+function metrics(id){const st=S.stores[id],Dd=STORES[id];
+  const week=Dd.week.slice();week[6]+=st.d.qr;
+  const qr=week[6];const ordered=Dd.ordered+st.d.ordered;
+  const langs={};Object.keys(Dd.langs).forEach(k=>langs[k]=Dd.langs[k]);Object.keys(st.d.langs).forEach(k=>langs[k]=(langs[k]||0)+st.d.langs[k]);
+  const lt=Object.values(langs).reduce((a,b)=>a+b,0);const foreign=lt?(lt-(langs.ko||0))/lt:0;
+  const rs=st.d.callResp.reduce((a,b)=>a+b/1000,0);const rn=Dd.respN+st.d.callResp.length;const resp=(Dd.respN*Dd.respAvg+rs)/rn;
+  const or=st.d.orderResp;return {week,qr,ordered,conv:qr?ordered/qr:0,langs,lt,foreign,resp,demoQr:st.d.qr,demoOrd:st.d.ordered,demoCalls:st.d.callResp.length,demoLang:Object.values(st.d.langs).reduce((a,b)=>a+b,0),orderAvg:or.length?or.reduce((a,b)=>a+b,0)/or.length:null};}
+
+/* ---------- 그리기 ---------- */
+function keepScroll(el,fn){const top=el.scrollTop;fn();el.scrollTop=top;}
+function render(){
+  renderTop();
+  keepScroll($('#b-guest'),()=>$('#b-guest').innerHTML=guestHTML());
+  keepScroll($('#b-staff'),()=>$('#b-staff').innerHTML=staffHTML());
+  keepScroll($('#b-owner'),()=>$('#b-owner').innerHTML=ownerHTML());
+  keepScroll($('#b-admin'),()=>$('#b-admin').innerHTML=adminHTML());
+  $('#log').innerHTML=logHTML();
+  tick();
+}
+function renderTop(){
+  $('#storeSeg').innerHTML=SIDS.map(id=>`<button type="button" data-act="store" data-v="${id}" aria-pressed="${S.store===id}">${esc(STORES[id].name)}</button>`).join('');
+  const st=cur();const nNew=st.orders.filter(o=>!o.ackAt).length+st.calls.filter(c=>!c.ackAt).length+st.chat.filter(m=>m.from==='guest'&&!m.read).length;
+  const own=STORES[S.store].scan.length&&st.scan.stage==='review'?pending(st):0;
+  const tabs=[['guest','손님웹',0],['staff','직원앱',nNew],['owner','상점앱',own],['admin','관리자',0]];
+  $('#mtabs').innerHTML=tabs.map(([k,n,b])=>`<button type="button" data-act="tab" data-v="${k}" aria-pressed="${S.tab===k}">${n}${b?`<span class="badge">${b}</span>`:''}</button>`).join('');
+  ['guest','staff','owner','admin'].forEach(k=>$('#p-'+k).classList.toggle('on',S.tab===k));
+}
+
+/* 손님웹 */
+function guestHTML(){
+  const st=cur(),Dd=D(),g=st.guest;const l=g.lang?eff(g.lang):'ko';
+  if(g.screen==='lang'||!g.lang){
+    return `<div class="g-hello"><div class="hi">어서 오세요 · Welcome · いらっしゃいませ · 欢迎光临 · Xin chào</div>
+      <h3>${esc(Dd.name)}</h3><div class="g-tbl">${esc(Dd.latin)} · ${Dd.table}번 테이블 · Table ${Dd.table}</div>
+      <p class="sec-s" style="margin-top:12px">언어를 골라 주세요 · Choose your language</p></div>
+      <div class="langs">${LANGS.map(x=>`<button type="button" data-act="lang" data-v="${x.c}" aria-pressed="${g.lang===x.c}" lang="${x.c==='zht'?'zh-Hant':x.c==='zh'?'zh-Hans':x.c}"><b>${esc(x.l)}</b><small>${esc(x.k)}${x.real?'':' <span class="ex">예시</span>'}</small></button>`).join('')}</div>`;
+  }
+  const unread=g.screen==='chat'?0:st.chat.filter(m=>m.from==='staff').length-(g.seenStaff||0);
+  const head=`<div class="g-top"><div class="g-row"><div><div class="g-store">${esc(Dd.name)}</div><div class="g-tbl">${esc(t(l,'table',{n:Dd.table}))}</div></div>
+    <button type="button" class="g-lang" data-act="gscreen" data-v="lang" aria-label="${esc(t(l,'lang'))}">${esc(LMAP[g.lang].l)}</button></div>
+    <div class="g-acts"><button type="button" class="btn ${['menu','cart','status'].includes(g.screen)?'sec':'gry'}" data-act="gscreen" data-v="menu">${esc(t(l,'menu'))}</button><button type="button" class="btn ${g.screen==='call'?'sec':'gry'}" data-act="gscreen" data-v="call">${esc(t(l,'call'))}</button>
+    <button type="button" class="btn ${g.screen==='chat'?'sec':'gry'}" data-act="gscreen" data-v="chat">${esc(t(l,'chat'))}${unread>0?` <span class="badge">${unread}</span>`:''}</button></div></div>`;
+  const note=LMAP[g.lang].real?'':`<div class="g-note">${esc(LMAP[g.lang].k)}는 데모에서 영어로 보여요 <span class="ex">예시</span> 실제는 언어 파일을 추가해요.</div>`;
+  let body='',cta='';
+  if(g.screen==='menu'){
+    let lastCat='';
+    body=st.menu.map(m=>{const c=m.cat!==lastCat?`<div class="cat">${esc(catName(m.cat,l))}</div>`:'';lastCat=m.cat;
+      const n=g.cart[m.id]||0;const isNew=st.newIds.includes(m.id);
+      return `${c}<div class="mi${isNew&&st.flashMenu?' hl':''}" data-item="${m.id}"><div class="mi-n">${esc(m.name[l])}${isNew?` <span class="chip info"><i></i>${esc(t(l,'newb'))}</span>`:''}</div>
+        ${l!=='ko'?`<div class="mi-o">${esc(m.name.ko)}</div>`:''}<div class="mi-d">${esc(m.desc[l])}</div>
+        <div class="mi-tags"><span class="spice" aria-label="${esc(t(l,'s'+m.spice))}">${[1,2,3].map(i=>`<i class="${i<=m.spice?'on':''}"></i>`).join('')} ${esc(t(l,'s'+m.spice))}</span>
+        <span class="alg">${m.alg.length?`${esc(t(l,'alg'))}: <b>${m.alg.map(a=>esc(ALG[a][l])).join(' · ')}</b>`:esc(t(l,'noalg'))}</span></div>
+        <div class="mi-f"><span class="price num">${won(m.price,l)}</span>${n?`<span class="step"><button type="button" data-act="cart" data-v="${m.id}" data-n="-1" aria-label="빼기">−</button><span class="num">${n}</span><button type="button" data-act="cart" data-v="${m.id}" data-n="1" aria-label="더하기">+</button></span>`:`<button type="button" class="btn sec sm" data-act="cart" data-v="${m.id}" data-n="1">${esc(t(l,'add'))}</button>`}</div></div>`;}).join('');
+    body+=`<div class="ver">메뉴 v${st.ver} · 점주 승인본 ${l!=='ko'?'· '+esc(LMAP[g.lang].l):''}</div>`;
+    const cnt=Object.values(g.cart).reduce((a,b)=>a+b,0);
+    if(cnt)cta=`<div class="g-cta"><button type="button" class="btn pri full" data-act="gscreen" data-v="cart">${esc(t(l,'order',{n:cnt,p:won(total(st),l)}))}</button></div>`;
+  } else if(g.screen==='cart'){
+    const items=Object.entries(g.cart);
+    body=`<div class="sec-t">${esc(t(l,'review'))}</div>`+(items.length?items.map(([id,n])=>{const m=item(st,id);return `<div class="line"><div><div class="nm">${esc(m.name[l])}</div><div class="sb">${l!=='ko'?esc(m.name.ko)+' · ':''}${won(m.price,l)}</div></div><span class="step"><button type="button" data-act="cart" data-v="${id}" data-n="-1" aria-label="빼기">−</button><span class="num">${n}</span><button type="button" data-act="cart" data-v="${id}" data-n="1" aria-label="더하기">+</button></span></div>`;}).join('')+`<div class="tot"><span>${esc(t(l,'total'))}</span><span class="num">${won(total(st),l)}</span></div><p class="sec-s">${esc(t(l,'pay'))}</p>`:`<div class="empty">${esc(t(l,'empty'))}</div>`)+`<div style="margin-top:12px"><button type="button" class="btn gry" data-act="gscreen" data-v="menu">${esc(t(l,'back'))}</button></div>`;
+    if(items.length)cta=`<div class="g-cta"><button type="button" class="btn pri full" data-act="order">${esc(t(l,'send'))}</button></div>`;
+  } else if(g.screen==='status'){
+    const o=st.orders.find(x=>x.id===g.order);
+    if(o){const stp=o.doneAt?3:o.ackAt?2:1;const title=o.doneAt?t(l,'served'):o.ackAt?t(l,'acked'):t(l,'sent');
+      body=`<div class="stat"><span class="chip ${o.ackAt?'ok':'warn'}"><i></i>#${o.no}</span><h3>${esc(title)}</h3>
+      <div class="meta">${o.ackAt?esc(t(l,'inS',{s:durL(o.ackAt-o.createdAt,l)})):`${esc(t(l,'wait'))} · <span class="num" data-since="${o.createdAt}" data-fmt="clock">0:00</span>`}</div>
+      <div class="prog"><i class="on"></i><i class="${stp>=2?'on':''}"></i><i class="${stp>=3?'on':''}"></i></div>
+      <div class="prog-l"><span>${esc(t(l,'s_req'))}</span><span>${esc(t(l,'s_ok'))}</span><span>${esc(t(l,'s_srv'))}</span></div></div>
+      ${o.items.map(([id,n])=>{const m=item(st,id);return `<div class="line"><span class="nm">${esc(m.name[l])}</span><span class="num">× ${n}</span></div>`;}).join('')}`;}
+    body+=`<div style="margin-top:16px"><button type="button" class="btn gry" data-act="gscreen" data-v="menu">${esc(t(l,'back'))}</button></div>`;
+  } else if(g.screen==='call'){
+    const c=st.calls.find(x=>x.id===g.call);
+    body=`<div class="sec-t">${esc(t(l,'callT'))}</div>`+(c?`<div class="stat" style="margin:12px 0"><span class="chip ${c.ackAt?'ok':'warn'}"><i></i>${esc(t(l,c.kind))}</span><h3>${esc(c.ackAt?t(l,'callAck'):t(l,'callSent'))}</h3><div class="meta">${c.ackAt?esc(t(l,'inS',{s:durL(c.ackAt-c.createdAt,l)})):`<span class="num" data-since="${c.createdAt}" data-fmt="clock">0:00</span>`}</div></div>`:'')+
+      `<div class="opts">${CALLS.map(k=>`<button type="button" data-act="call" data-v="${k}">${esc(t(l,k))}</button>`).join('')}</div>
+      <div style="margin-top:16px"><button type="button" class="btn gry" data-act="gscreen" data-v="menu">${esc(t(l,'back'))}</button></div>`;
+  } else if(g.screen==='chat'){
+    body=`<div class="sec-t">${esc(t(l,'chatT'))}</div><p class="sec-s">${esc(t(l,'chatH'))}</p><div class="msgs">`+(st.chat.length?st.chat.map(m=>{
+      if(m.from==='guest'){const q=Dd.q[m.i];const op=g.showOrig[m.id];return `<div class="msg me"><div class="bub" lang="${m.lang}">${esc(q[eff(m.lang)])}</div>${l!=='ko'?`<button type="button" class="tog" data-act="gorig" data-v="${m.id}">${esc(op?t(l,'hide'):t(l,'seen'))}</button>${op?`<div class="orig"><small>${esc(t(l,'seen'))}</small>${esc(q.ko)}</div>`:''}`:''}</div>`;}
+      const r=Dd.r[m.i];const op=g.showOrig[m.id];return `<div class="msg"><span class="who">${esc(t(l,'staff'))} · ${hhmm(m.at)}</span><div class="bub">${esc(r[l])}</div>${l!=='ko'?`<button type="button" class="tog" data-act="gorig" data-v="${m.id}">${esc(op?t(l,'hide'):t(l,'orig'))}</button>${op?`<div class="orig"><small>${esc(t(l,'origK'))}</small>${esc(r.ko)}</div>`:''}`:''}</div>`;
+    }).join(''):`<div class="empty">${esc(t(l,'chatE'))}</div>`)+`</div>`;
+    cta=`<div class="chat-cta"><div class="cap">${esc(t(l,'quick'))}</div><div class="quick">${Dd.q.map((q,i)=>`<button type="button" data-act="gmsg" data-v="${i}">${esc(q[l])}</button>`).join('')}</div></div>`;
+  }
+  return head+`<div class="g-body">${note}${body}</div>`+cta;
+}
+function catName(c,l){const M={'식사':{en:'Meals',ja:'お食事',zh:'主食',vi:'Món chính'},'곁들임':{en:'Sides',ja:'一品料理',zh:'小吃',vi:'Món ăn kèm'},'술':{en:'Drinks',ja:'お酒',zh:'酒水',vi:'Đồ uống có cồn'},'커피':{en:'Coffee',ja:'コーヒー',zh:'咖啡',vi:'Cà phê'},'라떼':{en:'Lattes',ja:'ラテ',zh:'拿铁',vi:'Latte'},'차':{en:'Tea',ja:'お茶',zh:'茶',vi:'Trà'},'디저트':{en:'Desserts',ja:'デザート',zh:'甜点',vi:'Tráng miệng'}};return l==='ko'?c:(M[c]&&M[c][l])||c;}
+function total(st){return Object.entries(st.guest.cart).reduce((a,[id,n])=>a+item(st,id).price*n,0);}
+
+/* 직원앱 */
+function staffHTML(){
+  const st=cur(),Dd=D();
+  const oNew=st.orders.filter(o=>!o.doneAt),cNew=st.calls.filter(c=>!c.ackAt),mNew=st.chat.filter(m=>m.from==='guest'&&!m.read).length;
+  const tab=st.staffTab;
+  let h=`<div class="s-top"><div class="thr"><span>${esc(Dd.name)} · 직원 ${esc(Dd.staff)}</span><span>알림 소리·진동 켬</span></div>
+   <div class="seg sm" role="group" aria-label="직원앱 메뉴" style="margin-top:12px;width:100%">
+   ${[['orders','주문',oNew.filter(o=>!o.ackAt).length],['calls','호출',cNew.length],['chat','채팅',mNew]].map(([k,n,b])=>`<button type="button" style="flex:1" data-act="stab" data-v="${k}" aria-pressed="${tab===k}">${n}${b?` <span class="badge">${b}</span>`:''}</button>`).join('')}</div></div><div class="s-body">`;
+  if(tab==='orders'){
+    h+=oNew.length?oNew.map(o=>`<div class="o-card${o.isNew?' new':''}" data-order="${o.id}"><div class="o-h"><span class="o-t">${o.table}번 테이블 <span class="mono" style="color:var(--mut)">#${o.no}</span></span><span class="o-el num" data-since="${o.createdAt}" data-stop="${o.ackAt||''}" data-late="60">0초</span></div>
+      <div class="o-items">${o.items.map(([id,n])=>`${esc(item(st,id).name.ko)} × ${n}`).join('<br>')}</div>
+      <div class="o-meta">${o.ackAt?`<span class="chip info"><i></i>확인함 · ${dur(o.ackAt-o.createdAt)} 만에</span>`:`<span class="chip warn"><i></i>새 주문</span>`}<span class="chip">${esc(LMAP[o.lang].l)} 손님</span></div>
+      <div class="o-act">${o.ackAt?`<button type="button" class="btn sec" data-act="odone" data-v="${o.id}">서빙 완료</button>`:`<button type="button" class="btn pri" data-act="oack" data-v="${o.id}">확인했어요</button>`}</div></div>`).join(''):`<div class="card empty">새 주문이 없어요. 손님웹에서 주문 요청을 보내 보세요.</div>`;
+    const done=st.orders.filter(o=>o.doneAt).slice(0,4);
+    if(done.length)h+=`<div class="card"><h3>오늘 완료 ${st.orders.filter(o=>o.doneAt).length}건</h3>${done.map(o=>`<div class="done-row"><span>${o.table}번 · ${o.items.map(([id,n])=>esc(item(st,id).name.ko)+'×'+n).join(', ')}</span><span class="num">${hhmm(o.doneAt)}</span></div>`).join('')}</div>`;
+  } else if(tab==='calls'){
+    h+=st.calls.length?st.calls.map(c=>`<div class="o-card${c.isNew?' new':''}" data-call="${c.id}"><div class="o-h"><span class="o-t">${c.table}번 테이블</span><span class="o-el num" data-since="${c.createdAt}" data-stop="${c.ackAt||''}" data-late="60">0초</span></div>
+      <div class="o-items">${esc(CALL_KO[c.kind])}</div><div class="o-meta">${c.ackAt?`<span class="chip ok"><i></i>응답 · ${dur(c.ackAt-c.createdAt)}</span>`:`<span class="chip warn"><i></i>기다리는 중</span>`}<span class="chip">${esc(LMAP[c.lang].l)} 손님</span></div>
+      ${c.ackAt?'':`<div class="o-act"><button type="button" class="btn pri" data-act="cack" data-v="${c.id}">가는 중이에요</button></div>`}</div>`).join(''):`<div class="card empty">호출이 없어요. 손님웹의 '직원 호출'을 눌러 보세요.</div>`;
+  } else {
+    const l=st.guest.lang||'ko';
+    h+=`<div class="card"><div class="o-h"><h3>${Dd.table}번 테이블</h3><span class="chip">${esc(LMAP[l].l)} 손님</span></div><p class="cs">손님 말은 한국어로 보여요. 답장은 손님 언어로 번역돼 가요.</p><div class="msgs" style="margin-top:12px">`+
+      (st.chat.length?st.chat.map(m=>{const op=st.staffOrig[m.id];const el=eff(m.lang);
+        if(m.from==='guest'){const q=Dd.q[m.i];return `<div class="msg"><span class="who">손님 · ${esc(LMAP[m.lang].k)} → 한국어</span><div class="bub">${esc(q.ko)}</div>${m.lang!=='ko'?`<button type="button" class="tog" data-act="sorig" data-v="${m.id}">${op?'원문 닫기':'원문 보기'}</button>${op?`<div class="orig" lang="${el}"><small>원문(${esc(LMAP[m.lang].k)})</small>${esc(q[el])}</div>`:''}`:''}</div>`;}
+        const r=Dd.r[m.i];return `<div class="msg me"><div class="bub">${esc(r.ko)}</div>${m.lang!=='ko'?`<button type="button" class="tog" data-act="sorig" data-v="${m.id}">${op?'번역 닫기':'손님에게 간 번역 보기'}</button>${op?`<div class="orig" lang="${el}"><small>${esc(LMAP[m.lang].k)}로 보냄</small>${esc(r[el])}</div>`:''}`:''}</div>`;
+      }).join(''):`<div class="empty" style="padding:16px 0">아직 대화가 없어요.</div>`)+`</div></div>
+      <div class="card"><h3>빠른 답장</h3><div class="quick" style="margin-top:8px">${Dd.r.map((r,i)=>`<button type="button" data-act="smsg" data-v="${i}">${esc(r.ko)}</button>`).join('')}</div></div>`;
+  }
+  return h+`</div>`;
+}
+
+/* 상점앱 */
+function ownerHTML(){
+  const st=cur(),Dd=D(),sc=st.scan;
+  const order=['idle','read','review','done'];const at={idle:0,ocr:0,read:1,trans:1,review:2,done:3}[sc.stage];
+  let h=`<div class="s-top"><div class="thr"><span>${esc(Dd.name)} · 점주 ${esc(Dd.owner)}</span><span class="num">손님웹 메뉴 v${st.ver}</span></div>
+   <div class="steps">${['메뉴판 읽기','번역 만들기','역번역 검수','승인·배포'].map((n,i)=>`<div class="${i<=at?'on':''}"><i></i><span>${n}</span></div>`).join('')}</div></div><div class="s-body">`;
+  const paper=`<div class="paper">${sc.stage==='ocr'?'<div class="scanline"></div>':''}<h4>${esc(Dd.name.split(' ')[0])}</h4><ul>${Dd.paper.map(([n,p])=>`<li><span>${esc(n)}</span><span class="num">${p}</span></li>`).join('')}</ul><small>가게 메뉴판 사진 · 예시</small></div>`;
+  let cta='';
+  if(sc.stage==='idle'||sc.stage==='ocr'){
+    h+=`<div class="card"><h3>새 메뉴판 사진으로 메뉴 고치기</h3><p class="cs">사진을 찍으면 글자를 읽어 지금 메뉴와 비교해요.</p><div style="margin-top:12px">${paper}</div></div>`;
+    cta=`<div class="own-cta"><button type="button" class="btn pri full" data-act="scan" ${sc.stage==='ocr'?'disabled':''}>${sc.stage==='ocr'?'글자 읽는 중…':'이 사진으로 메뉴 읽기'}</button></div>`;
+  } else if(sc.stage==='read'||sc.stage==='trans'){
+    h+=`<div class="card"><h3>메뉴 ${Dd.scan.length}개를 읽었어요</h3><p class="cs">지금 손님웹 메뉴 v${st.ver}와 비교했어요.</p><div style="margin-top:8px">${Dd.scan.map(x=>`<div class="rd"><span>${esc(x.label)} <span class="num" style="color:var(--mut)">${x.price.toLocaleString('ko-KR')}</span></span>${x.kind==='new'?'<span class="chip info"><i></i>새 메뉴</span>':x.kind==='changed'?'<span class="chip warn"><i></i>설명 바뀜</span>':'<span class="chip"><i></i>그대로</span>'}</div>`).join('')}</div></div>`;
+    cta=`<div class="own-cta"><div class="sub">영어·일본어·중국어(간체)·베트남어로 만들어요 · 데모는 5개 언어</div><button type="button" class="btn pri full" data-act="trans" ${sc.stage==='trans'?'disabled':''}>${sc.stage==='trans'?'번역과 역번역 만드는 중…':'다국어 번역 만들기'}</button></div>`;
+  } else if(sc.stage==='review'){
+    const p=pending(st);const issues=Dd.scan.filter(x=>x.issue!=='none');
+    h+=`<div class="card"><h3>${p?`확인할 것 ${p}개가 남았어요`:'모두 확인했어요'}</h3><p class="cs">번역을 다시 한국어로 옮겨(역번역) 원래 뜻과 비교했어요. 고기 종류·술·알레르기 같은 주의어가 빠지면 멈춰요.</p>
+      <div class="sum">${Dd.scan.filter(x=>x.issue==='missing').length?`<span class="chip bad"><i></i>빠진 말 ${Dd.scan.filter(x=>x.issue==='missing'&&!sc.fixed[x.id]).length}</span>`:''}${Dd.scan.some(x=>x.issue==='caution')?`<span class="chip warn"><i></i>주의어 확인 ${Dd.scan.filter(x=>x.issue==='caution'&&!sc.acked[x.id]).length}</span>`:''}<span class="chip ok"><i></i>문제 없음 ${Dd.scan.filter(x=>x.issue==='none').length+Object.keys(sc.fixed).length+Object.keys(sc.acked).length}</span></div></div>`;
+    h+=issues.map(x=>{const fixed=sc.fixed[x.id],acked=sc.acked[x.id];const done=fixed||acked;
+      const chip=x.issue==='missing'?(fixed?'<span class="chip ok"><i></i>고침</span>':'<span class="chip bad"><i></i>빠진 말</span>'):(acked?'<span class="chip ok"><i></i>확인함</span>':'<span class="chip warn"><i></i>주의어</span>');
+      return `<div class="rv" data-rv="${x.id}"><div class="rv-h"><div><b>${esc(x.label)}</b><small>${x.kind==='new'?'새 메뉴':x.kind==='changed'?'설명 바뀜':'그대로'} · ${x.price.toLocaleString('ko-KR')}원</small></div>${chip}</div>
+      ${done&&sc.open!==x.id?'':`<p class="why">${esc(x.why)}</p><div class="tr">${x.rows.map(r=>{const bad=r.bad&&!fixed;return `<div class="tr-r"><span class="lc">${LSHORT[r.l]}·${r.l.toUpperCase()}</span><div><div lang="${r.l}">${bad?r.bad:(r.fix||r.ok)}</div><div class="bk">${bad?r.badBk:(r.fixBk||r.okBk)}</div></div></div>`;}).join('')}
+      ${x.algBad?`<div class="tr-r"><span class="lc">표시</span><div>알레르기: ${fixed?x.algFix:x.algBad.replace(/^(?!<)/,'')}</div></div>`:''}</div>`}
+      <div class="rv-a">${x.issue==='missing'&&!fixed?`<button type="button" class="btn sec" data-act="fix" data-v="${x.id}">추천 번역으로 고치기</button>`:''}${x.issue==='caution'&&!acked?`<button type="button" class="btn sec" data-act="ack" data-v="${x.id}">모든 언어에 있어요, 확인</button>`:''}${done?`<button type="button" class="btn gry sm" data-act="open" data-v="${x.id}">${sc.open===x.id?'접기':'다시 보기'}</button>`:''}</div></div>`;}).join('');
+    h+=`<div class="card"><h3>문제 없음</h3>${Dd.scan.filter(x=>x.issue==='none').map(x=>`<div class="rd"><span>${esc(x.label)}</span><span class="chip ok"><i></i>${x.note||'뜻 같음'}</span></div>`).join('')}</div>`;
+    cta=`<div class="own-cta"><div class="sub">${p?'확인할 것을 모두 처리해야 올릴 수 있어요':'승인하면 손님웹 메뉴가 바로 바뀌어요'}</div><button type="button" class="btn pri full" data-act="approve" ${p?'disabled':''}>${p?`확인할 것 ${p}개 남음`:`점주 승인하고 손님 메뉴에 올리기`}</button></div>`;
+  } else {
+    h+=`<div class="card"><span class="chip ok"><i></i>배포됨 · ${hhmm(sc.at)}</span><h3 style="margin-top:8px;font-size:20px">메뉴 v${st.ver}을 손님웹에 올렸어요</h3><p class="cs">점주 ${esc(Dd.owner)} 승인 · 5개 언어 동시 반영</p>
+      <div style="margin-top:8px">${Dd.scan.filter(x=>x.item).map(x=>`<div class="chg"><span class="chip info"><i></i>추가</span><span>${esc(x.label)} · 5개 언어, 알레르기 ${esc(x.item.alg.map(a=>ALG[a].ko).join('·'))}</span></div>`).join('')}${Dd.scan.filter(x=>x.patch).map(x=>`<div class="chg"><span class="chip warn"><i></i>수정</span><span>${esc(x.label)} · 설명과 알레르기(새우) 표시</span></div>`).join('')}</div></div>
+      <div class="card"><h3>되돌리기</h3><p class="cs">문제가 보이면 v${st.ver-1}로 한 번에 되돌릴 수 있게 만들어요. 데모에선 '처음부터'로 되돌려요.</p></div>`;
+    cta=`<div class="own-cta"><button type="button" class="btn sec full" data-act="seemenu">손님 메뉴에서 확인하기</button></div>`;
+  }
+  return h+`</div>`+cta;
+}
+
+/* 관리자 */
+function adminHTML(){
+  const st=cur(),Dd=D(),m=metrics(S.store);
+  const days=[...Array(7)].map((_,i)=>{const d=new Date(Date.now()-(6-i)*86400000);return (d.getMonth()+1)+'/'+d.getDate();});
+  const mx=Math.max(...m.week)*1.15;const W=300,H=140,bw=26,gap=(W-7*bw)/6;
+  const bars=m.week.map((v,i)=>{const h=Math.max(4,v/mx*(H-36));const x=i*(bw+gap);const y=H-20-h;return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="8" fill="${i===6?'var(--brand)':'var(--brand-tint-2)'}"/><text x="${(x+bw/2).toFixed(1)}" y="${(y-6).toFixed(1)}" text-anchor="middle" font-size="11" fill="${i===6?'var(--ink)':'var(--mut)'}" font-weight="${i===6?700:500}">${v}</text><text x="${(x+bw/2).toFixed(1)}" y="${H-4}" text-anchor="middle" font-size="11" fill="var(--mut)">${i===6?'오늘':days[i]}</text>`;}).join('');
+  const lk=Object.entries(m.langs).filter(([k,v])=>v>0).sort((a,b)=>b[1]-a[1]);const top=lk.slice(0,5);const etc=lk.slice(5).reduce((a,[k,v])=>a+v,0);if(etc)top.push(['etc',etc]);
+  const mxl=Math.max(...top.map(x=>x[1]));
+  const other=SIDS.find(x=>x!==S.store);
+  const resp=Math.round(m.resp);
+  let h=`<div class="s-top"><div class="thr"><span>운영 관리자 · 읽기 전용</span><span class="sid ${S.store}">storeId: ${S.store}</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:8px;gap:8px"><b style="font-size:17px">${esc(Dd.name)} · 오늘</b><span class="ex">기준값 예시</span></div></div><div class="s-body">
+    <div class="kpis">
+     <div class="kpi main"><div class="kl">QR 접속</div><div class="kv" data-k="qr">${m.qr}<small>회</small></div><div class="kd">${m.demoQr?`데모에서 +${m.demoQr}`:'&nbsp;'}</div></div>
+     <div class="kpi"><div class="kl">주문 전환율</div><div class="kv" data-k="conv">${Math.round(m.conv*100)}<small>%</small></div><div class="kd">${m.ordered}/${m.qr} 접속이 주문${m.demoOrd?` · +${m.demoOrd}`:''}</div></div>
+     <div class="kpi"><div class="kl">외국어 이용</div><div class="kv" data-k="foreign">${Math.round(m.foreign*100)}<small>%</small></div><div class="kd">${m.demoLang?`언어 선택 +${m.demoLang}`:'&nbsp;'}</div></div>
+     <div class="kpi"><div class="kl">호출 평균 응답</div><div class="kv" data-k="resp">${resp>=60?Math.floor(resp/60)+'<small>분</small> '+(resp%60)+'<small>초</small>':resp+'<small>초</small>'}</div><div class="kd">${m.demoCalls?`데모 응답 ${m.demoCalls}건 반영`:'&nbsp;'}</div></div>
+    </div>
+    <div class="card chart"><div class="o-h"><h3>최근 7일 QR 접속</h3><span class="cs">오늘만 진하게</span></div><svg viewBox="0 -4 ${W} ${H+4}" role="img" aria-label="최근 7일 QR 접속 막대 차트">${bars}</svg></div>
+    <div class="card"><div class="o-h"><h3>손님이 고른 언어</h3><span class="cs num">${m.lt}명 · 외국어 1위 진하게</span></div><div style="margin-top:8px">${top.map(([k,v],i)=>`<div class="lbar"><span>${k==='etc'?'기타':esc(LMAP[k].k)}</span><span class="tk"><i class="${k===(top.find(x=>x[0]!=='ko'&&x[0]!=='etc')||[])[0]?'top':''}" style="width:${(v/mxl*100).toFixed(1)}%"></i></span><span class="pc">${Math.round(v/m.lt*100)}%</span></div>`).join('')}</div></div>
+    <div class="card"><div class="o-h"><h3>응답 시간</h3><span class="cs">데모에서 잰 값</span></div>
+      <div class="rd"><span>주문 확인까지 평균</span><b class="num" data-k="orderAvg">${m.orderAvg==null?'아직 없음':dur(m.orderAvg)}</b></div>
+      <div class="rd"><span>호출 응답 (데모 ${m.demoCalls}건)</span><b class="num">${st.d.callResp.length?dur(st.d.callResp[st.d.callResp.length-1])+' (최근)':'아직 없음'}</b></div></div>
+    <div class="card"><div class="o-h"><h3>매장별 비교</h3><span class="cs">관리자만 보여요</span></div>
+      <table class="mt" style="margin-top:8px"><thead><tr><th>매장</th><th>QR</th><th>전환</th><th>외국어</th></tr></thead><tbody>${SIDS.map(id=>{const x=metrics(id);return `<tr class="${id===S.store?'cur':''}" data-row="${id}"><td><span class="sid ${id}">${id}</span></td><td>${x.qr}</td><td>${Math.round(x.conv*100)}%</td><td>${Math.round(x.foreign*100)}%</td></tr>`;}).join('')}</tbody></table></div>
+    <div class="card" data-perm><h3>매장 데이터가 섞이지 않는지</h3><p class="cs">점주·직원 계정은 자기 storeId 문서만 읽어요.</p>
+      <button type="button" class="btn gry sm" style="margin-top:12px;width:100%" data-act="perm">${esc(Dd.name)} 직원으로 ${esc(STORES[other].name)} 주문 읽어 보기</button>
+      ${st.perm?`<div class="deny" data-deny>거부됨 · permission-denied<br>${esc(STORES[other].name)} 주문 0건 반환</div>`:''}
+      <div class="rule">match /stores/{storeId}/orders/{id} {
+  allow read: if <b>request.auth.token.storeId == storeId</b>
+    && request.auth.token.role in ['owner','staff'];
+  allow read: if request.auth.token.role == 'admin';
+}</div><p class="cs" style="margin-top:8px">Firebase 기준 예시예요. 실제 백엔드에 맞춰 1주차에 정해요.</p></div>
+  </div>`;
+  return h;
+}
+
+/* 기록 */
+function logHTML(){
+  if(!S.log.length)return `<div class="empty">아직 기록이 없어요.</div>`;
+  return S.log.slice(0,40).map(x=>`<div class="lg"><span class="tm">${hhmm(x.at)}</span><span><span class="sid ${x.sid}">${x.sid}</span></span><div>${esc(x.app)} · ${esc(x.text)}<div class="ev">${esc(x.ev)}</div></div></div>`).join('');
+}
+
+/* 속도 비교 */
+let raceT=null;
+function race(anim){
+  const R=[{n:'지금 · Flutter Web',dl:2.9,pt:0.9,s:'엔진·앱 코드를 다 받은 뒤에 그려요'},{n:'바꾼 뒤 · Next.js',dl:0.6,pt:0.5,s:'메뉴 글자가 든 HTML이 먼저 와요'}];
+  const max=4.0;
+  $('#race').innerHTML=R.map((r,i)=>`<div><div class="rc-h"><b>${r.n}</b><span class="rc-v num" id="rv${i}">0.0<small>초</small></span></div><div class="rc-t"><i class="dl" id="rd${i}" style="width:0"></i><i class="pt" id="rp${i}" style="width:0"></i></div><div class="rc-s">${r.s} · <span class="ex">예시</span></div></div>`).join('');
+  if(raceT)cancelAnimationFrame(raceT);const t0=performance.now();
+  const reduce=!anim||window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const step=now=>{const e=reduce?99:(now-t0)/1000;
+    R.forEach((r,i)=>{const tt=r.dl+r.pt;const x=Math.min(e,tt);const d=Math.min(x,r.dl),p=Math.max(0,x-r.dl);
+      $('#rd'+i).style.width=(d/max*100)+'%';$('#rp'+i).style.width=(p/max*100)+'%';$('#rv'+i).innerHTML=x.toFixed(1)+'<small>초</small>';});
+    if(e<4)raceT=requestAnimationFrame(step);};
+  raceT=requestAnimationFrame(step);
+}
+
+/* 시간 표시 */
+function tick(){const now=Date.now();
+  document.querySelectorAll('[data-since]').forEach(el=>{const s=+el.dataset.since;const stop=el.dataset.stop?+el.dataset.stop:0;const ms=(stop||now)-s;
+    el.textContent=el.dataset.fmt==='clock'?clock(ms):dur(ms)+(stop?'':' 지남');if(el.dataset.late)el.classList.toggle('late',!stop&&ms>+el.dataset.late*1000);});}
+setInterval(tick,1000);
+
+/* 토스트 */
+let toastT=null;
+function toast(msg,btn,tab){const el=$('#toast');$('#toastT').textContent=msg;const b=$('#toastB');
+  if(btn){b.hidden=false;b.textContent=btn;b.onclick=()=>{goTab(tab);el.hidden=true;};}else b.hidden=true;
+  el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,3200);}
+function goTab(k){S.tab=k;render();window.scrollTo({top:$('.panes').offsetTop-64,behavior:'auto'});}
+function flash(k){if(isMobile())return;const p=$('#p-'+k);p.classList.remove('flash');void p.offsetWidth;p.classList.add('flash');setTimeout(()=>p.classList.remove('flash'),1200);}
+const rid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+
+/* 누르기 */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b||b.disabled)return;const a=b.dataset.act,v=b.dataset.v;const st=cur();
+  switch(a){
+   case 'reset':dispatch({type:'reset'});race();toast('처음 상태로 돌렸어요');break;
+   case 'store':if(v===S.store)break;dispatch({type:'store',to:v});toast(STORES[v].name+' 데이터만 보여요');break;
+   case 'tab':S.tab=v;render();break;
+   case 'newqr':dispatch({type:'newqr'});toast('새 손님으로 QR을 찍었어요');break;
+   case 'lang':dispatch({type:'lang',l:v});break;
+   case 'gscreen':if(v==='chat')st.guest.seenStaff=st.chat.filter(m=>m.from==='staff').length;dispatch({type:'gscreen',s:v});break;
+   case 'cart':dispatch({type:'cart',id:v,n:+b.dataset.n});break;
+   case 'order':dispatch({type:'order',oid:rid('o')});st.staffTab='orders';render();flash('staff');if(isMobile())toast('직원앱에 새 주문이 떴어요','직원앱 보기','staff');break;
+   case 'call':dispatch({type:'call',cid:rid('c'),k:v});st.staffTab='calls';render();flash('staff');if(isMobile())toast('직원앱에 호출이 떴어요','직원앱 보기','staff');break;
+   case 'gmsg':dispatch({type:'gmsg',i:+v});st.staffTab='chat';render();flash('staff');if(isMobile())toast('직원에게 한국어로 갔어요','직원앱 보기','staff');scrollBottom('#b-guest');break;
+   case 'smsg':dispatch({type:'smsg',i:+v});st.guest.seenStaff=st.guest.screen==='chat'?st.chat.filter(m=>m.from==='staff').length:st.guest.seenStaff;render();flash('guest');if(isMobile())toast('손님 언어로 번역해 보냈어요','손님웹 보기','guest');scrollBottom('#b-guest');break;
+   case 'oack':dispatch({type:'oack',oid:v});flash('admin');if(isMobile())toast('손님 화면이 바뀌었어요','손님웹 보기','guest');break;
+   case 'odone':dispatch({type:'odone',oid:v});break;
+   case 'cack':dispatch({type:'cack',cid:v});flash('admin');if(isMobile())toast('응답 시간이 지표에 들어갔어요','관리자 보기','admin');break;
+   case 'stab':dispatch({type:'stab',v});break;
+   case 'gorig':dispatch({type:'gorig',mid:v});break;
+   case 'sorig':dispatch({type:'sorig',mid:v});break;
+   case 'scan':{const sid=S.store;dispatch({type:'scan',v:'ocr'});setTimeout(()=>dispatch({type:'scan',v:'read',sid}),1200);break;}
+   case 'trans':{const sid=S.store;dispatch({type:'scan',v:'trans'});setTimeout(()=>dispatch({type:'scan',v:'review',sid}),1000);break;}
+   case 'fix':dispatch({type:'fix',id:v});break;
+   case 'ack':dispatch({type:'ack',id:v});break;
+   case 'open':dispatch({type:'open',id:v});break;
+   case 'approve':dispatch({type:'approve'});st.flashMenu=1;if(st.guest.screen!=='lang'&&st.guest.lang)st.guest.screen='menu';render();st.flashMenu=0;flash('guest');if(isMobile())toast('손님 메뉴가 바뀌었어요','손님웹 보기','guest');break;
+   case 'seemenu':{if(st.guest.lang)st.guest.screen='menu';st.flashMenu=1;if(isMobile())S.tab='guest';render();st.flashMenu=0;const id=st.newIds[0];const el=id&&document.querySelector('#b-guest [data-item="'+id+'"]');if(el){const box=$('#b-guest');if(isMobile())el.scrollIntoView({block:'center'});else box.scrollTop=el.offsetTop-140;}flash('guest');break;}
+   case 'perm':dispatch({type:'perm'});break;
+   case 'race':race(true);break;
+  }
+});
+function scrollBottom(sel){const b=$(sel);if(!isMobile())b.scrollTop=b.scrollHeight;}
+
+/* 시작 */
+S=fresh();startSession(S.stores.sodam,Date.now());
+render();race();
+window.__demo={get S(){return S;},metrics,pending};
+})();
+</script>
+</body>
+</html>
